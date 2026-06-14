@@ -1,0 +1,51 @@
+<%= tag.div id: dom_id(daily_task),
+      class: "flex items-start gap-3 rounded-xl border border-gray-200 bg-white px-3 py-3 #{'opacity-60' if daily_task.skipped?}" do %>
+  <% if daily_task.open? %>
+    <%= button_to complete_routine_daily_task_path(daily_task), method: :patch,
+          class: "mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-300 text-transparent hover:border-emerald-500",
+          aria: { label: "Complete #{daily_task.title}" } do %>✓<% end %>
+  <% elsif daily_task.completed? %>
+    <%= button_to reopen_routine_daily_task_path(daily_task), method: :patch,
+          class: "mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-500 text-white",
+          aria: { label: "Reopen #{daily_task.title}" } do %>✓<% end %>
+  <% else %>
+    <%= button_to reopen_routine_daily_task_path(daily_task), method: :patch,
+          class: "mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-300 text-gray-400",
+          aria: { label: "Reopen #{daily_task.title}" } do %>↺<% end %>
+  <% end %>
+
+  <div class="min-w-0 flex-1">
+    <p class="font-medium text-gray-900 <%= 'line-through text-gray-400' if daily_task.completed? %> <%= 'line-through' if daily_task.skipped? %>">
+      <%= daily_task.title %>
+      <% if daily_task.important? %>
+        <span class="ml-1 align-middle text-amber-500" title="Important">★</span>
+      <% end %>
+    </p>
+    <div class="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+      <% if daily_task.category.present? %>
+        <span class="rounded-full bg-gray-100 px-2 py-0.5"><%= daily_task.category.humanize %></span>
+      <% end %>
+      <% if daily_task.template? %>
+        <span class="text-gray-400">Routine</span>
+      <% end %>
+      <% if daily_task.skipped? && daily_task.skip_reason.present? %>
+        <span class="italic">Skipped: <%= daily_task.skip_reason %></span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="flex shrink-0 items-center gap-1">
+    <% if daily_task.open? %>
+      <%= button_to skip_routine_daily_task_path(daily_task), method: :patch,
+            class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-700",
+            form: { data: { turbo_confirm: nil } } do %>Skip<% end %>
+    <% end %>
+    <% if daily_task.manual? %>
+      <%= link_to "Edit", edit_routine_daily_task_path(daily_task),
+            class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-700" %>
+      <%= button_to routine_daily_task_path(daily_task), method: :delete,
+            class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-red-50 hover:text-red-600",
+            form: { data: { turbo_confirm: "Remove this task?" } } do %>Delete<% end %>
+    <% end %>
+  </div>
+<% end %>

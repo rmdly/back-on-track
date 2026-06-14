@@ -1,0 +1,67 @@
+<%= form_with model: task_template, url: url, class: "space-y-5",
+      data: { controller: "toggle", toggle_show_when_value: "custom" } do |form| %>
+  <%= render "shared/form_errors", model: task_template %>
+
+  <div>
+    <%= form.label :title, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :title, autofocus: true, placeholder: "e.g. Drink 2L water",
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div>
+    <%= form.label :frequency, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :frequency,
+          TaskTemplate.frequencies.keys.map { |f| [f.humanize, f] },
+          {},
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500",
+          data: { toggle_target: "trigger", action: "toggle#refresh" } %>
+  </div>
+
+  <div data-toggle-target="field">
+    <span class="block text-sm font-medium text-gray-700">Days</span>
+    <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <% TaskTemplate::WEEKDAY_BITS.keys.each do |day| %>
+        <label class="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2">
+          <%= check_box_tag "task_template[weekdays][]", day, task_template.weekday_enabled?(day),
+                id: "weekday_#{day}",
+                class: "h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" %>
+          <span class="text-sm text-gray-700"><%= day.to_s.capitalize.first(3) %></span>
+        </label>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <%= form.label :category, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :category, TaskTemplate::CATEGORIES.map { |c| [c.humanize, c] }, { include_blank: "None" },
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div>
+    <%= form.label :description, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_area :description, rows: 2,
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div>
+    <%= form.label :time_of_day, "Time of day (optional)", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.time_field :time_of_day,
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div class="space-y-2">
+    <label class="flex items-center gap-2">
+      <%= form.check_box :important, class: "h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" %>
+      <span class="text-sm text-gray-700">Important</span>
+    </label>
+    <label class="flex items-center gap-2">
+      <%= form.check_box :active, class: "h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" %>
+      <span class="text-sm text-gray-700">Active (shows on Today when due)</span>
+    </label>
+  </div>
+
+  <div class="flex gap-2">
+    <%= form.submit submit_label, class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    <%= link_to "Cancel", routine_task_templates_path, class: "rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50" %>
+  </div>
+<% end %>

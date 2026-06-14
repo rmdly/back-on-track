@@ -1,0 +1,44 @@
+<% content_for :title, "Routine" %>
+
+<header class="mb-6 flex items-end justify-between">
+  <div>
+    <%= link_to "← Today", root_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+    <h1 class="mt-2 text-2xl font-bold tracking-tight">Routine</h1>
+    <p class="text-gray-500">Recurring habits that appear on the days they are due.</p>
+  </div>
+  <%= link_to "New", new_routine_task_template_path,
+        class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
+</header>
+
+<% if @task_templates.any? %>
+  <div class="space-y-2">
+    <% @task_templates.each do |template| %>
+      <div class="flex items-start justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 <%= 'opacity-60' unless template.active? %>">
+        <div>
+          <p class="font-medium text-gray-900">
+            <%= template.title %>
+            <% if template.important? %><span class="text-amber-500" title="Important">★</span><% end %>
+          </p>
+          <div class="mt-0.5 flex flex-wrap gap-2 text-xs text-gray-500">
+            <span class="rounded-full bg-gray-100 px-2 py-0.5"><%= template.frequency.humanize %></span>
+            <% if template.category.present? %>
+              <span class="rounded-full bg-gray-100 px-2 py-0.5"><%= template.category.humanize %></span>
+            <% end %>
+            <% unless template.active? %><span class="text-gray-400">Inactive</span><% end %>
+          </div>
+        </div>
+        <div class="flex shrink-0 gap-1">
+          <%= link_to "Edit", edit_routine_task_template_path(template),
+                class: "rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-gray-100" %>
+          <%= button_to "Delete", routine_task_template_path(template), method: :delete,
+                class: "rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-red-50 hover:text-red-600",
+                form: { data: { turbo_confirm: "Remove this routine item?" } } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <%= render "shared/empty_state",
+        message: "No routine items yet. Add habits like “Drink 2L water” or “Go for a walk” and they’ll show up on Today.",
+        action_label: "Add your first", action_path: new_routine_task_template_path %>
+<% end %>

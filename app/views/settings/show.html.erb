@@ -1,0 +1,34 @@
+<% content_for :title, "Settings" %>
+
+<header class="mb-6">
+  <h1 class="text-2xl font-bold tracking-tight">Settings</h1>
+</header>
+
+<div class="space-y-4 rounded-xl bg-white p-5 shadow-sm">
+  <div>
+    <p class="text-sm text-gray-500">Name</p>
+    <p class="font-medium"><%= @user.name.presence || "—" %></p>
+  </div>
+  <div>
+    <p class="text-sm text-gray-500">Email</p>
+    <p class="font-medium"><%= @user.email_address %></p>
+  </div>
+  <div>
+    <p class="text-sm text-gray-500">Week starts on</p>
+    <p class="font-medium"><%= @user.week_starts_on.capitalize %></p>
+  </div>
+  <div>
+    <p class="text-sm text-gray-500">Time zone</p>
+    <p class="font-medium"><%= @user.time_zone %></p>
+  </div>
+
+  <div class="flex gap-2 pt-2">
+    <%= link_to "Edit", edit_settings_path,
+          class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
+    <%= link_to "Manage routine", routine_task_templates_path,
+          class: "rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+  </div>
+</div>
+
+<%= button_to "Sign out", session_path, method: :delete,
+      class: "mt-6 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50" %>

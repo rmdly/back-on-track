@@ -1,0 +1,28 @@
+<%# Mobile: fixed bottom bar. Desktop (md+): sticky top bar. %>
+<nav class="fixed bottom-0 inset-x-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur
+            md:static md:border-t-0 md:border-b md:bg-white">
+  <div class="mx-auto max-w-3xl px-2 md:px-5">
+    <div class="flex items-stretch justify-between md:justify-start md:gap-1 md:py-2">
+      <div class="hidden md:flex md:items-center md:gap-2 md:mr-auto md:py-1">
+        <span class="font-bold text-lg tracking-tight text-gray-900">Back On Track</span>
+      </div>
+
+      <% nav_sections.each do |section| %>
+        <% active = nav_active?(section) %>
+        <% if section[:path] %>
+          <%= link_to section[:path],
+                class: "group flex flex-1 md:flex-none flex-col md:flex-row items-center md:gap-2 gap-0.5 px-2 py-2 md:px-3 md:rounded-lg text-xs md:text-sm font-medium transition-colors #{active ? 'text-emerald-600 md:bg-emerald-50' : 'text-gray-500 hover:text-gray-900 md:hover:bg-gray-50'}" do %>
+            <%= nav_icon(section[:key]) %>
+            <span><%= section[:label] %></span>
+          <% end %>
+        <% else %>
+          <span class="flex flex-1 md:flex-none flex-col md:flex-row items-center md:gap-2 gap-0.5 px-2 py-2 md:px-3 text-xs md:text-sm font-medium text-gray-300 cursor-not-allowed"
+                title="Coming soon">
+            <%= nav_icon(section[:key]) %>
+            <span><%= section[:label] %></span>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</nav>

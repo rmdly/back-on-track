@@ -1,0 +1,12 @@
+<% content_for :title, "Today" %>
+
+<header class="mb-6 flex items-end justify-between">
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight">Today</h1>
+    <p class="text-gray-500"><%= @date.strftime("%A, %-d %B") %></p>
+  </div>
+  <%= link_to "Routine", routine_task_templates_path,
+        class: "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+</header>
+
+<%= render "routine/daily_tasks/checklist", daily_plan: @daily_plan, new_task: @new_task %>

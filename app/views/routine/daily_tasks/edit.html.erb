@@ -1,0 +1,36 @@
+<% content_for :title, "Edit task" %>
+
+<header class="mb-6">
+  <%= link_to "← Today", root_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight">Edit task</h1>
+</header>
+
+<%= form_with model: @daily_task, url: routine_daily_task_path(@daily_task), class: "space-y-4" do |form| %>
+  <%= render "shared/form_errors", model: @daily_task %>
+
+  <div>
+    <%= form.label :title, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :title, class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div>
+    <%= form.label :category, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :category, DailyTask::CATEGORIES.map { |c| [c.humanize, c] }, { include_blank: "None" },
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div>
+    <%= form.label :notes, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_area :notes, rows: 3, class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <label class="flex items-center gap-2">
+    <%= form.check_box :important, class: "h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" %>
+    <span class="text-sm text-gray-700">Important</span>
+  </label>
+
+  <div class="flex gap-2">
+    <%= form.submit "Save", class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    <%= link_to "Cancel", root_path, class: "rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50" %>
+  </div>
+<% end %>

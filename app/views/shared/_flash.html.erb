@@ -1,0 +1,8 @@
+<div id="flash" class="space-y-2">
+  <% if notice = flash[:notice] %>
+    <p class="py-2 px-3 bg-emerald-50 text-emerald-700 font-medium rounded-lg" role="status"><%= notice %></p>
+  <% end %>
+  <% if alert = flash[:alert] %>
+    <p class="py-2 px-3 bg-red-50 text-red-600 font-medium rounded-lg" role="alert"><%= alert %></p>
+  <% end %>
+</div>

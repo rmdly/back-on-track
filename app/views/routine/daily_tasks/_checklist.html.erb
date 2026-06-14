@@ -1,0 +1,65 @@
+<%# locals: daily_plan:, new_task: %>
+<% open_tasks = daily_plan.daily_tasks.select(&:open?) %>
+<% completed_tasks = daily_plan.daily_tasks.select(&:completed?) %>
+<% skipped_tasks = daily_plan.daily_tasks.select(&:skipped?) %>
+<% pct = daily_plan.completion_percentage %>
+
+<%= tag.section id: "today_checklist", class: "space-y-5" do %>
+  <%# Progress %>
+  <div class="rounded-xl bg-white p-4 shadow-sm">
+    <div class="flex items-center justify-between">
+      <p class="text-sm font-medium text-gray-700">
+        <%= daily_plan.completed_tasks_count %> of <%= open_tasks.size + completed_tasks.size %> done
+      </p>
+      <p class="text-sm font-semibold <%= pct == 100 ? 'text-emerald-600' : 'text-gray-500' %>"><%= pct %>%</p>
+    </div>
+    <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+      <div class="h-full rounded-full bg-emerald-500 transition-all" style="width: <%= pct %>%"></div>
+    </div>
+    <% if pct == 100 && (open_tasks.size + completed_tasks.size).positive? %>
+      <p class="mt-2 text-sm text-emerald-600">All done for today. Small wins count.</p>
+    <% end %>
+  </div>
+
+  <%# Quick add %>
+  <%= form_with model: new_task, url: routine_daily_tasks_path, class: "flex gap-2" do |form| %>
+    <%= form.text_field :title, placeholder: "Add a task for today…", autocomplete: "off",
+          class: "flex-1 rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    <%= form.submit "Add", class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+  <% end %>
+
+  <%# Open tasks %>
+  <div class="space-y-2">
+    <% if open_tasks.any? %>
+      <%= render partial: "routine/daily_tasks/daily_task", collection: open_tasks, as: :daily_task %>
+    <% else %>
+      <%= render "shared/empty_state",
+            message: "No open tasks right now. Add one above or set up recurring routine items.",
+            action_label: "Manage routine", action_path: routine_task_templates_path %>
+    <% end %>
+  </div>
+
+  <%# Completed %>
+  <% if completed_tasks.any? %>
+    <details class="group" open>
+      <summary class="cursor-pointer select-none text-sm font-medium text-gray-500">
+        Completed (<%= completed_tasks.size %>)
+      </summary>
+      <div class="mt-2 space-y-2">
+        <%= render partial: "routine/daily_tasks/daily_task", collection: completed_tasks, as: :daily_task %>
+      </div>
+    </details>
+  <% end %>
+
+  <%# Skipped %>
+  <% if skipped_tasks.any? %>
+    <details class="group">
+      <summary class="cursor-pointer select-none text-sm font-medium text-gray-500">
+        Skipped (<%= skipped_tasks.size %>)
+      </summary>
+      <div class="mt-2 space-y-2">
+        <%= render partial: "routine/daily_tasks/daily_task", collection: skipped_tasks, as: :daily_task %>
+      </div>
+    </details>
+  <% end %>
+<% end %>

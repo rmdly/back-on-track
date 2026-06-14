@@ -1,0 +1,8 @@
+<%# locals: message:, (optional) action_label:, action_path: %>
+<div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-6 py-8 text-center">
+  <p class="text-gray-600"><%= message %></p>
+  <% if local_assigns[:action_label] && local_assigns[:action_path] %>
+    <%= link_to action_label, action_path,
+          class: "mt-4 inline-block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
+  <% end %>
+</div>
