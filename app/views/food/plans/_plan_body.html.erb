@@ -1,0 +1,46 @@
+<%# locals: weekly_plan:, new_planned_meal: %>
+<%= tag.section id: "meal_plan_body", class: "space-y-5" do %>
+  <%# Add a meal to the week %>
+  <%= form_with model: new_planned_meal, url: food_planned_meals_path,
+        class: "space-y-2 rounded-xl bg-white p-4 shadow-sm" do |form| %>
+    <%= hidden_field_tag "planned_meal[weekly_plan_id]", weekly_plan.id %>
+    <div class="flex gap-2">
+      <%= form.select :planned_on, weekly_plan.days.map { |d| [d.strftime("%a %-d"), d.iso8601] },
+            { selected: (weekly_plan.days.include?(Date.current) ? Date.current.iso8601 : weekly_plan.starts_on.iso8601) },
+            class: "min-w-0 flex-1 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.select :meal_type, PlannedMeal.meal_types.keys.map { |t| [t.humanize, t] }, {},
+            class: "rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div class="flex gap-2">
+      <% if Current.user.meals.active.any? %>
+        <%= form.collection_select :meal_id, Current.user.meals.active.ordered, :id, :name,
+              { include_blank: "Pick a meal…" },
+              class: "min-w-0 flex-1 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <% end %>
+      <%= form.text_field :name, placeholder: "or type a meal", autocomplete: "off",
+            class: "min-w-0 flex-1 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.submit "Add", class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <%# Generate shopping list %>
+  <%= button_to "Generate shopping list", food_plan_generate_shopping_list_path(weekly_plan_id: weekly_plan.id),
+        class: "w-full rounded-lg border border-emerald-600 px-4 py-2.5 text-center text-sm font-medium text-emerald-700 hover:bg-emerald-50" %>
+
+  <%# Days %>
+  <div class="space-y-2">
+    <% weekly_plan.days.each do |day| %>
+      <% meals = weekly_plan.planned_meals_for(day).sort_by { |m| PlannedMeal.meal_types.keys.index(m.meal_type) } %>
+      <div class="rounded-xl border border-gray-200 bg-white px-4 py-3 <%= 'ring-1 ring-emerald-200' if day == Date.current %>">
+        <p class="text-sm font-medium text-gray-900"><%= day.strftime("%A %-d %b") %></p>
+        <% if meals.any? %>
+          <div class="mt-2 space-y-1">
+            <%= render partial: "food/planned_meals/planned_meal", collection: meals, as: :planned_meal %>
+          </div>
+        <% else %>
+          <p class="mt-1 text-sm text-gray-400">No meals planned.</p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,11 @@
+<% content_for :title, "Meal plan" %>
+<%= render "food/subnav" %>
+
+<header class="mb-4">
+  <h1 class="text-2xl font-bold tracking-tight">This week’s meals</h1>
+  <p class="text-sm text-gray-500">
+    <%= @weekly_plan.starts_on.strftime("%-d %b") %> – <%= @weekly_plan.ends_on.strftime("%-d %b") %>
+  </p>
+</header>
+
+<%= render "food/plans/plan_body", weekly_plan: @weekly_plan, new_planned_meal: @new_planned_meal %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_15_090003) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_15_100004) do
   create_table "daily_plans", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.date "date", null: false
@@ -41,6 +41,54 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_090003) do
     t.index ["daily_plan_id"], name: "index_daily_tasks_on_daily_plan_id"
     t.index ["task_template_id"], name: "index_daily_tasks_on_task_template_id"
     t.index ["user_id"], name: "index_daily_tasks_on_user_id"
+  end
+
+  create_table "meal_ingredients", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "meal_id", null: false
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.decimal "quantity", precision: 8, scale: 2
+    t.integer "shopping_item_id"
+    t.string "unit"
+    t.datetime "updated_at", null: false
+    t.index ["meal_id", "position"], name: "index_meal_ingredients_on_meal_id_and_position"
+    t.index ["meal_id"], name: "index_meal_ingredients_on_meal_id"
+    t.index ["shopping_item_id"], name: "index_meal_ingredients_on_shopping_item_id"
+  end
+
+  create_table "meals", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "effort_level"
+    t.integer "estimated_cost_cents"
+    t.text "instructions"
+    t.string "meal_type", default: "dinner", null: false
+    t.string "name", null: false
+    t.integer "prep_time_minutes"
+    t.string "protein_level"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id", "active"], name: "index_meals_on_user_id_and_active"
+    t.index ["user_id", "name"], name: "index_meals_on_user_id_and_name"
+    t.index ["user_id"], name: "index_meals_on_user_id"
+  end
+
+  create_table "planned_meals", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "meal_id"
+    t.string "meal_type", default: "dinner", null: false
+    t.string "name", null: false
+    t.text "notes"
+    t.date "planned_on", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.integer "weekly_plan_id", null: false
+    t.index ["meal_id"], name: "index_planned_meals_on_meal_id"
+    t.index ["user_id"], name: "index_planned_meals_on_user_id"
+    t.index ["weekly_plan_id", "planned_on"], name: "index_planned_meals_on_weekly_plan_id_and_planned_on"
+    t.index ["weekly_plan_id"], name: "index_planned_meals_on_weekly_plan_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -107,9 +155,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_090003) do
     t.integer "store_id"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.integer "weekly_plan_id"
     t.index ["store_id"], name: "index_shopping_lists_on_store_id"
     t.index ["user_id", "status"], name: "index_shopping_lists_on_user_id_and_status"
     t.index ["user_id"], name: "index_shopping_lists_on_user_id"
+    t.index ["weekly_plan_id"], name: "index_shopping_lists_on_weekly_plan_id"
   end
 
   create_table "stores", force: :cascade do |t|
@@ -153,10 +203,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_090003) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  create_table "weekly_plans", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "ends_on", null: false
+    t.integer "food_budget_cents"
+    t.text "notes"
+    t.date "starts_on", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id", "starts_on"], name: "index_weekly_plans_on_user_id_and_starts_on", unique: true
+    t.index ["user_id"], name: "index_weekly_plans_on_user_id"
+  end
+
   add_foreign_key "daily_plans", "users"
   add_foreign_key "daily_tasks", "daily_plans"
   add_foreign_key "daily_tasks", "task_templates"
   add_foreign_key "daily_tasks", "users"
+  add_foreign_key "meal_ingredients", "meals"
+  add_foreign_key "meal_ingredients", "shopping_items"
+  add_foreign_key "meals", "users"
+  add_foreign_key "planned_meals", "meals"
+  add_foreign_key "planned_meals", "users"
+  add_foreign_key "planned_meals", "weekly_plans"
   add_foreign_key "sessions", "users"
   add_foreign_key "shopping_items", "stores"
   add_foreign_key "shopping_items", "users"
@@ -166,6 +234,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_090003) do
   add_foreign_key "shopping_list_items", "users"
   add_foreign_key "shopping_lists", "stores"
   add_foreign_key "shopping_lists", "users"
+  add_foreign_key "shopping_lists", "weekly_plans"
   add_foreign_key "stores", "users"
   add_foreign_key "task_templates", "users"
+  add_foreign_key "weekly_plans", "users"
 end

@@ -1,0 +1,10 @@
+<%# locals: planned_meal: %>
+<div class="flex items-center justify-between gap-2 rounded-lg bg-gray-50 px-3 py-1.5 text-sm">
+  <div class="min-w-0">
+    <span class="text-xs uppercase tracking-wide text-gray-400"><%= planned_meal.meal_type.first(3) %></span>
+    <span class="ml-1 font-medium text-gray-800"><%= planned_meal.name %></span>
+  </div>
+  <%= button_to food_planned_meal_path(planned_meal), method: :delete,
+        class: "shrink-0 rounded-md px-2 py-0.5 text-xs text-gray-400 hover:bg-red-50 hover:text-red-600",
+        aria: { label: "Remove #{planned_meal.name}" } do %>✕<% end %>
+</div>

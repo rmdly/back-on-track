@@ -30,6 +30,17 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :food do
+    get "plan", to: "plans#show", as: :plan
+    post "plan/generate_shopping_list", to: "plans#generate_shopping_list", as: :plan_generate_shopping_list
+
+    resources :meals do
+      resources :meal_ingredients, only: [:create]
+    end
+    resources :meal_ingredients, only: [:edit, :update, :destroy]
+    resources :planned_meals, only: [:create, :edit, :update, :destroy]
+  end
+
   resource :settings, only: [:show, :edit, :update]
 
   # Test-only deterministic sign-in for system tests (never mounted in prod).

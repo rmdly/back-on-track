@@ -6,6 +6,10 @@ class DashboardsController < ApplicationController
     @daily_plan.populate_from_templates!
     @new_task = DailyTask.new
     @active_shopping_lists = Current.user.shopping_lists.active.ordered
+
+    weekly_plan = WeeklyPlan.current_for(Current.user, @date)
+    @planned_meals = weekly_plan.planned_meals_for(@date)
+                                .sort_by { |meal| PlannedMeal.meal_types.keys.index(meal.meal_type) }
   end
 
   private

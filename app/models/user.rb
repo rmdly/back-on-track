@@ -13,6 +13,11 @@ class User < ApplicationRecord
   has_many :shopping_lists, dependent: :destroy
   has_many :shopping_list_items, dependent: :destroy
 
+  # Food domain (Phase 3)
+  has_many :meals, dependent: :destroy
+  has_many :weekly_plans, dependent: :destroy
+  has_many :planned_meals, dependent: :destroy
+
   WEEK_START_DAYS = %w[monday sunday].freeze
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }

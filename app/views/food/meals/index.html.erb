@@ -1,0 +1,31 @@
+<% content_for :title, "Meals" %>
+<%= render "food/subnav" %>
+
+<header class="mb-4 flex items-end justify-between">
+  <h1 class="text-2xl font-bold tracking-tight">Meals</h1>
+  <%= link_to "New meal", new_food_meal_path,
+        class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
+</header>
+
+<% if @meals.any? %>
+  <div class="space-y-2">
+    <% @meals.each do |meal| %>
+      <%= link_to food_meal_path(meal),
+            class: "block rounded-xl border border-gray-200 bg-white px-4 py-3 hover:border-emerald-400 #{'opacity-60' unless meal.active?}" do %>
+        <div class="flex items-center justify-between">
+          <p class="font-medium text-gray-900"><%= meal.name %></p>
+          <span class="text-xs text-gray-500"><%= meal.meal_type.humanize %></span>
+        </div>
+        <div class="mt-1 flex flex-wrap items-center gap-2">
+          <%= render "food/meals/tags", meal: meal %>
+          <% if meal.estimated_cost_cents %><span class="text-xs text-gray-500"><%= money(meal.estimated_cost_cents) %></span><% end %>
+          <% if meal.prep_time_minutes %><span class="text-xs text-gray-500"><%= meal.prep_time_minutes %> min</span><% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <%= render "shared/empty_state",
+        message: "Create reusable meals like “Chicken rice bowl” or “Oats with banana”, then plan them into your week.",
+        action_label: "Add your first meal", action_path: new_food_meal_path %>
+<% end %>

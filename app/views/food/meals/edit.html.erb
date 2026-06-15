@@ -1,0 +1,7 @@
+<% content_for :title, "Edit meal" %>
+<header class="mb-6">
+  <%= link_to "← Back to meal", food_meal_path(@meal), class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight">Edit meal</h1>
+</header>
+
+<%= render "form", meal: @meal, url: food_meal_path(@meal), submit_label: "Save changes" %>

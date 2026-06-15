@@ -1,0 +1,35 @@
+<% content_for :title, @meal.name %>
+
+<header class="mb-5">
+  <%= link_to "← Meals", food_meals_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <div class="mt-2 flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight"><%= @meal.name %></h1>
+      <p class="text-sm text-gray-500"><%= @meal.meal_type.humanize %></p>
+    </div>
+    <div class="flex shrink-0 gap-1">
+      <%= link_to "Edit", edit_food_meal_path(@meal), class: "rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100" %>
+      <%= button_to "Delete", food_meal_path(@meal), method: :delete,
+            class: "rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-red-50 hover:text-red-600",
+            form: { data: { turbo_confirm: "Delete this meal?" } } %>
+    </div>
+  </div>
+  <div class="mt-2 flex flex-wrap items-center gap-2">
+    <%= render "food/meals/tags", meal: @meal %>
+    <% if @meal.estimated_cost_cents %><span class="text-xs text-gray-500"><%= money(@meal.estimated_cost_cents) %></span><% end %>
+    <% if @meal.prep_time_minutes %><span class="text-xs text-gray-500"><%= @meal.prep_time_minutes %> min</span><% end %>
+  </div>
+</header>
+
+<% if @meal.description.present? %>
+  <p class="mb-4 text-gray-700"><%= @meal.description %></p>
+<% end %>
+
+<%= render "food/meals/ingredients", meal: @meal, new_ingredient: @meal_ingredient %>
+
+<% if @meal.instructions.present? %>
+  <section class="mt-6">
+    <h2 class="mb-2 text-sm font-medium text-gray-500">Instructions</h2>
+    <p class="whitespace-pre-line text-gray-700"><%= @meal.instructions %></p>
+  </section>
+<% end %>

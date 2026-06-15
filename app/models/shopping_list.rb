@@ -1,6 +1,7 @@
 class ShoppingList < ApplicationRecord
   belongs_to :user
   belongs_to :store, optional: true
+  belongs_to :weekly_plan, optional: true
   has_many :shopping_list_items, -> { ordered }, dependent: :destroy
 
   enum :status, {

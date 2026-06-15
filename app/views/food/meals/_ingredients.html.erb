@@ -1,0 +1,48 @@
+<%# locals: meal:, new_ingredient: %>
+<%= tag.section id: "meal_ingredients", class: "space-y-3" do %>
+  <h2 class="text-sm font-medium text-gray-500">Ingredients</h2>
+
+  <% if meal.meal_ingredients.any? %>
+    <div class="space-y-2">
+      <% meal.meal_ingredients.each do |ingredient| %>
+        <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-3 py-2.5">
+          <div>
+            <span class="font-medium text-gray-900"><%= ingredient.name %></span>
+            <% if ingredient.quantity.present? || ingredient.unit.present? %>
+              <span class="ml-1 text-sm text-gray-500">
+                <%= ingredient.quantity.to_s.sub(/\.0+$/, "") if ingredient.quantity %><%= " #{ingredient.unit}" if ingredient.unit.present? %>
+              </span>
+            <% end %>
+          </div>
+          <div class="flex shrink-0 gap-1">
+            <%= link_to "Edit", edit_food_meal_ingredient_path(ingredient),
+                  class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-700" %>
+            <%= button_to food_meal_ingredient_path(ingredient), method: :delete,
+                  class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-red-50 hover:text-red-600",
+                  form: { data: { turbo_confirm: "Remove #{ingredient.name}?" } } do %>✕<% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-sm text-gray-500">No ingredients yet. Add them below — they’ll feed your shopping list.</p>
+  <% end %>
+
+  <%= form_with model: new_ingredient, url: food_meal_meal_ingredients_path(meal),
+        class: "space-y-2 rounded-xl bg-white p-3 shadow-sm" do |form| %>
+    <% if Current.user.shopping_items.active.any? %>
+      <%= form.collection_select :shopping_item_id, Current.user.shopping_items.active.ordered, :id, :name,
+            { include_blank: "From library (optional)…" },
+            class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    <% end %>
+    <div class="flex gap-2">
+      <%= form.text_field :name, placeholder: "Ingredient", autocomplete: "off",
+            class: "min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.number_field :quantity, step: "0.01", min: "0", placeholder: "Qty",
+            class: "w-16 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.text_field :unit, placeholder: "Unit", autocomplete: "off",
+            class: "w-20 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.submit "Add", class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    </div>
+  <% end %>
+<% end %>

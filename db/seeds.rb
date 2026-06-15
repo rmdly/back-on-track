@@ -73,5 +73,56 @@ shopping_items.each do |name, category, qty, unit, pence, store|
   end
 end
 
+# --- Food (Phase 3) ---
+
+def item_for(user, name)
+  user.shopping_items.find_by(name: name)
+end
+
+meals = [
+  # name, meal_type, protein, effort, prep, cost_pence, [[ingredient, qty, unit, library_name], ...]
+  ["Oats with banana", "breakfast", "medium", "easy", 5, 60, [
+    ["Oats", 80, "g", "Oats"], ["Banana", 1, nil, "Bananas"], ["Milk", 200, "ml", "Milk"]
+  ]],
+  ["Greek yoghurt bowl", "breakfast", "high", "easy", 5, 120, [
+    ["Greek yoghurt", 200, "g", "Greek yoghurt"], ["Banana", 1, nil, "Bananas"], ["Peanut butter", 1, "tbsp", "Peanut butter"]
+  ]],
+  ["Egg wraps", "breakfast", "high", "easy", 10, 150, [
+    ["Eggs", 3, nil, "Eggs"], ["Wraps", 2, nil, "Wraps"], ["Spinach", 1, "handful", "Spinach"]
+  ]],
+  ["Chicken rice bowl", "dinner", "high", "medium", 25, 250, [
+    ["Chicken breast", 1, nil, "Chicken breast"], ["Rice", 100, "g", "Rice"], ["Broccoli", 1, "head", "Broccoli"]
+  ]],
+  ["Tuna pasta", "lunch", "high", "easy", 15, 180, [
+    ["Tuna", 1, "tin", "Tuna"], ["Pasta", 100, "g", "Pasta"], ["Light mayo", 1, "tbsp", "Light mayo"]
+  ]],
+  ["Mince and rice", "dinner", "high", "medium", 25, 280, [
+    ["Mince", 250, "g", "Mince"], ["Rice", 100, "g", "Rice"], ["Onions", 1, nil, "Onions"]
+  ]],
+  ["Jacket potato with tuna", "dinner", "high", "easy", 30, 150, [
+    ["Potatoes", 1, nil, "Potatoes"], ["Tuna", 1, "tin", "Tuna"], ["Light mayo", 1, "tbsp", "Light mayo"]
+  ]]
+]
+
+meals.each do |name, meal_type, protein, effort, prep, cost, ingredients|
+  meal = user.meals.find_or_create_by!(name: name) do |m|
+    m.meal_type = meal_type
+    m.protein_level = protein
+    m.effort_level = effort
+    m.prep_time_minutes = prep
+    m.estimated_cost_cents = cost
+  end
+
+  next if meal.meal_ingredients.any?
+
+  ingredients.each_with_index do |(ing_name, qty, unit, library_name), index|
+    meal.meal_ingredients.create!(
+      name: ing_name, quantity: qty, unit: unit, position: index,
+      shopping_item: item_for(user, library_name)
+    )
+  end
+end
+
 puts "Seeded #{User.count} user(s), #{user.task_templates.count} routine items, " \
-     "#{user.stores.count} stores and #{user.shopping_items.count} shopping items."
+     "#{user.stores.count} stores, #{user.shopping_items.count} shopping items " \
+     "and #{user.meals.count} meals."

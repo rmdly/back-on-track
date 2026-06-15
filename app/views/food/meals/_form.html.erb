@@ -1,0 +1,62 @@
+<%= form_with model: meal, url: url, class: "space-y-4" do |form| %>
+  <%= render "shared/form_errors", model: meal %>
+
+  <div>
+    <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :name, autofocus: true, placeholder: "e.g. Chicken rice bowl",
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= form.label :meal_type, "Type", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.select :meal_type, Meal.meal_types.keys.map { |t| [t.humanize, t] }, {},
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :estimated_cost, "Cost £", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :estimated_cost, step: "0.01", min: "0",
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4">
+    <div>
+      <%= form.label :prep_time_minutes, "Prep (min)", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :prep_time_minutes, min: "0",
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :protein_level, "Protein", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.select :protein_level, Meal.protein_levels.keys.map { |l| [l.humanize, l] }, { include_blank: "—" },
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :effort_level, "Effort", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.select :effort_level, Meal.effort_levels.keys.map { |l| [l.humanize, l] }, { include_blank: "—" },
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+  </div>
+
+  <div>
+    <%= form.label :description, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_area :description, rows: 2,
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div>
+    <%= form.label :instructions, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_area :instructions, rows: 3,
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <label class="flex items-center gap-2">
+    <%= form.check_box :active, class: "h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" %>
+    <span class="text-sm text-gray-700">Active</span>
+  </label>
+
+  <div class="flex gap-2">
+    <%= form.submit submit_label, class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    <%= link_to "Cancel", food_meals_path, class: "rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50" %>
+  </div>
+<% end %>
