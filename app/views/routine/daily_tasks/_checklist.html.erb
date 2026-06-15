@@ -4,7 +4,8 @@
 <% skipped_tasks = daily_plan.daily_tasks.select(&:skipped?) %>
 <% pct = daily_plan.completion_percentage %>
 
-<%= tag.section id: "today_checklist", class: "space-y-5" do %>
+<% is_today = daily_plan.date == Date.current %>
+<%= tag.section id: "day_checklist", class: "space-y-5" do %>
   <%# Progress %>
   <div class="rounded-xl bg-white p-4 shadow-sm">
     <div class="flex items-center justify-between">
@@ -17,13 +18,14 @@
       <div class="h-full rounded-full bg-emerald-500 transition-all" style="width: <%= pct %>%"></div>
     </div>
     <% if pct == 100 && (open_tasks.size + completed_tasks.size).positive? %>
-      <p class="mt-2 text-sm text-emerald-600">All done for today. Small wins count.</p>
+      <p class="mt-2 text-sm text-emerald-600">All done<%= " for today" if is_today %>. Small wins count.</p>
     <% end %>
   </div>
 
-  <%# Quick add %>
+  <%# Quick add — scoped to the day being viewed %>
   <%= form_with model: new_task, url: routine_daily_tasks_path, class: "flex gap-2" do |form| %>
-    <%= form.text_field :title, placeholder: "Add a task for today…", autocomplete: "off",
+    <%= hidden_field_tag :date, daily_plan.date.iso8601 %>
+    <%= form.text_field :title, placeholder: is_today ? "Add a task for today…" : "Add a task for this day…", autocomplete: "off",
           class: "flex-1 rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
     <%= form.submit "Add", class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
   <% end %>

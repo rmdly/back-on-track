@@ -1,0 +1,40 @@
+<%= form_with model: shopping_list, url: url, class: "space-y-4" do |form| %>
+  <%= render "shared/form_errors", model: shopping_list %>
+
+  <div>
+    <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :name, autofocus: true, placeholder: "e.g. Weekly shop",
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= form.label :store_id, "Store", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.collection_select :store_id, Current.user.stores.ordered, :id, :name, { include_blank: "Any / mixed" },
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :status, class: "block text-sm font-medium text-gray-700" %>
+      <%= form.select :status, ShoppingList.statuses.keys.map { |s| [s.humanize, s] }, {},
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= form.label :budget, "Budget £", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :budget, step: "0.01", min: "0", placeholder: "e.g. 40.00",
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :planned_on, "Planned for", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.date_field :planned_on,
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+  </div>
+
+  <div class="flex gap-2">
+    <%= form.submit submit_label, class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    <%= link_to "Cancel", shopping_shopping_lists_path, class: "rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50" %>
+  </div>
+<% end %>

@@ -1,0 +1,22 @@
+<% content_for :title, @shopping_list.name %>
+
+<header class="mb-5">
+  <%= link_to "← Lists", shopping_shopping_lists_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <div class="mt-2 flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight"><%= @shopping_list.name %></h1>
+      <p class="text-sm text-gray-500">
+        <%= @shopping_list.store&.name || "Mixed stores" %> · <%= @shopping_list.status.humanize %>
+      </p>
+    </div>
+    <div class="flex shrink-0 gap-1">
+      <%= link_to "Edit", edit_shopping_shopping_list_path(@shopping_list),
+            class: "rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100" %>
+      <%= button_to "Delete", shopping_shopping_list_path(@shopping_list), method: :delete,
+            class: "rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-red-50 hover:text-red-600",
+            form: { data: { turbo_confirm: "Delete this list?" } } %>
+    </div>
+  </div>
+</header>
+
+<%= render "shopping/shopping_lists/list_body", shopping_list: @shopping_list, new_item: @new_item %>

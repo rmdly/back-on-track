@@ -1,0 +1,44 @@
+<% content_for :title, "Edit item" %>
+<header class="mb-6">
+  <%= link_to "← Back to list", shopping_shopping_list_path(@shopping_list), class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight">Edit item</h1>
+</header>
+
+<%= form_with model: @shopping_list_item, url: shopping_shopping_list_item_path(@shopping_list_item), class: "space-y-4" do |form| %>
+  <%= render "shared/form_errors", model: @shopping_list_item %>
+
+  <div>
+    <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :name,
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4">
+    <div>
+      <%= form.label :quantity, "Qty", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :quantity, step: "0.01", min: "0",
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :unit, "Unit", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :unit,
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :estimated_unit_price, "Price £", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :estimated_unit_price, step: "0.01", min: "0",
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+  </div>
+
+  <div>
+    <%= form.label :store_id, "Store", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.collection_select :store_id, Current.user.stores.ordered, :id, :name, { include_blank: "None" },
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div class="flex gap-2">
+    <%= form.submit "Save", class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    <%= link_to "Cancel", shopping_shopping_list_path(@shopping_list), class: "rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50" %>
+  </div>
+<% end %>

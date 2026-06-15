@@ -1,0 +1,15 @@
+<%# locals: shopping_list: — compact card shown on the day view %>
+<%= link_to shopping_shopping_list_path(shopping_list),
+      class: "block rounded-xl border border-gray-200 bg-white px-4 py-3 hover:border-emerald-400" do %>
+  <div class="flex items-center justify-between">
+    <p class="font-medium text-gray-900"><%= shopping_list.name %></p>
+    <span class="text-sm text-gray-500"><%= pluralize(shopping_list.remaining_items_count, "item") %> left</span>
+  </div>
+  <div class="mt-1 flex flex-wrap gap-3 text-xs text-gray-500">
+    <span><%= shopping_list.store&.name || "Mixed stores" %></span>
+    <span>Left to buy <%= money(shopping_list.remaining_total_cents) %></span>
+    <% if shopping_list.budget_cents %>
+      <span class="<%= budget_status_class(shopping_list) %>">Budget <%= money(shopping_list.budget_cents) %></span>
+    <% end %>
+  </div>
+<% end %>

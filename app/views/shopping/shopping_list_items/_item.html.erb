@@ -1,0 +1,37 @@
+<%# locals: item:, shopping_list: %>
+<%= tag.div id: dom_id(item),
+      class: "flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-3 py-2.5 #{'opacity-60' if item.bought?}" do %>
+  <% if item.bought? %>
+    <%= button_to unbuy_shopping_shopping_list_item_path(item), method: :patch,
+          class: "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-500 text-white",
+          aria: { label: "Mark #{item.name} not bought" } do %>✓<% end %>
+  <% else %>
+    <%= button_to buy_shopping_shopping_list_item_path(item), method: :patch,
+          class: "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-300 text-transparent hover:border-emerald-500",
+          aria: { label: "Mark #{item.name} bought" } do %>✓<% end %>
+  <% end %>
+
+  <div class="min-w-0 flex-1">
+    <p class="font-medium text-gray-900 <%= 'line-through text-gray-400' if item.bought? %>"><%= item.name %></p>
+    <div class="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+      <% if shopping_list.show_quantity && item.quantity.present? %>
+        <span><%= item.quantity.to_s.sub(/\.0+$/, "") %><%= " #{item.unit}" if shopping_list.show_unit && item.unit.present? %></span>
+      <% elsif shopping_list.show_unit && item.unit.present? %>
+        <span><%= item.unit %></span>
+      <% end %>
+      <% if shopping_list.show_store && item.store %><span><%= item.store.name %></span><% end %>
+    </div>
+  </div>
+
+  <% if shopping_list.show_price && item.estimated_unit_price_cents.present? %>
+    <span class="shrink-0 text-sm font-medium text-gray-700"><%= money(item.estimated_total_cents) %></span>
+  <% end %>
+
+  <div class="flex shrink-0 items-center gap-1">
+    <%= link_to "Edit", edit_shopping_shopping_list_item_path(item),
+          class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-700" %>
+    <%= button_to shopping_shopping_list_item_path(item), method: :delete,
+          class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-red-50 hover:text-red-600",
+          form: { data: { turbo_confirm: "Remove #{item.name}?" } } do %>✕<% end %>
+  </div>
+<% end %>

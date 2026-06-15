@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_14_203122) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_15_090003) do
   create_table "daily_plans", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.date "date", null: false
@@ -52,6 +52,78 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_14_203122) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "shopping_items", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.decimal "default_quantity", precision: 8, scale: 2
+    t.string "default_unit"
+    t.integer "estimated_unit_price_cents"
+    t.string "name", null: false
+    t.text "notes"
+    t.integer "store_id"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["store_id"], name: "index_shopping_items_on_store_id"
+    t.index ["user_id", "active"], name: "index_shopping_items_on_user_id_and_active"
+    t.index ["user_id", "name"], name: "index_shopping_items_on_user_id_and_name"
+    t.index ["user_id"], name: "index_shopping_items_on_user_id"
+  end
+
+  create_table "shopping_list_items", force: :cascade do |t|
+    t.datetime "bought_at"
+    t.datetime "created_at", null: false
+    t.integer "estimated_unit_price_cents"
+    t.string "name", null: false
+    t.text "notes"
+    t.integer "position", default: 0, null: false
+    t.decimal "quantity", precision: 8, scale: 2
+    t.integer "shopping_item_id"
+    t.integer "shopping_list_id", null: false
+    t.integer "store_id"
+    t.string "unit"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["shopping_item_id"], name: "index_shopping_list_items_on_shopping_item_id"
+    t.index ["shopping_list_id", "position"], name: "index_shopping_list_items_on_shopping_list_id_and_position"
+    t.index ["shopping_list_id"], name: "index_shopping_list_items_on_shopping_list_id"
+    t.index ["store_id"], name: "index_shopping_list_items_on_store_id"
+    t.index ["user_id"], name: "index_shopping_list_items_on_user_id"
+  end
+
+  create_table "shopping_lists", force: :cascade do |t|
+    t.integer "budget_cents"
+    t.datetime "created_at", null: false
+    t.date "ends_on"
+    t.string "name", null: false
+    t.text "notes"
+    t.date "planned_on"
+    t.boolean "show_price", default: true, null: false
+    t.boolean "show_quantity", default: true, null: false
+    t.boolean "show_store", default: true, null: false
+    t.boolean "show_unit", default: true, null: false
+    t.date "starts_on"
+    t.string "status", default: "draft", null: false
+    t.integer "store_id"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["store_id"], name: "index_shopping_lists_on_store_id"
+    t.index ["user_id", "status"], name: "index_shopping_lists_on_user_id_and_status"
+    t.index ["user_id"], name: "index_shopping_lists_on_user_id"
+  end
+
+  create_table "stores", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id", "name"], name: "index_stores_on_user_id_and_name", unique: true
+    t.index ["user_id", "position"], name: "index_stores_on_user_id_and_position"
+    t.index ["user_id"], name: "index_stores_on_user_id"
+  end
+
   create_table "task_templates", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "category"
@@ -86,5 +158,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_14_203122) do
   add_foreign_key "daily_tasks", "task_templates"
   add_foreign_key "daily_tasks", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "shopping_items", "stores"
+  add_foreign_key "shopping_items", "users"
+  add_foreign_key "shopping_list_items", "shopping_items"
+  add_foreign_key "shopping_list_items", "shopping_lists"
+  add_foreign_key "shopping_list_items", "stores"
+  add_foreign_key "shopping_list_items", "users"
+  add_foreign_key "shopping_lists", "stores"
+  add_foreign_key "shopping_lists", "users"
+  add_foreign_key "stores", "users"
   add_foreign_key "task_templates", "users"
 end

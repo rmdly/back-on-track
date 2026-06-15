@@ -4,9 +4,8 @@ module NavigationHelper
   def nav_sections
     [
       { key: :today,    label: "Today",    path: root_path },
-      { key: :week,     label: "Week" },
       { key: :food,     label: "Food" },
-      { key: :shopping, label: "Shopping" },
+      { key: :shopping, label: "Shopping", path: shopping_shopping_lists_path },
       { key: :training, label: "Training" },
       { key: :running,  label: "Running" },
       { key: :settings, label: "Settings", path: settings_path }
@@ -15,7 +14,8 @@ module NavigationHelper
 
   def nav_active?(section)
     case section[:key]
-    when :today    then current_page?(root_path) || controller_name == "daily_tasks"
+    when :today    then controller_name.in?(%w[dashboards calendars]) || controller_path == "routine/daily_tasks"
+    when :shopping then controller_path.start_with?("shopping/")
     when :settings then controller_name == "settings"
     else false
     end

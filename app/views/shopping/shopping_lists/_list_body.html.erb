@@ -1,0 +1,89 @@
+<%# locals: shopping_list:, new_item: %>
+<% items = shopping_list.shopping_list_items.to_a %>
+<% to_buy = items.reject(&:bought?) %>
+<% bought = items.select(&:bought?) %>
+<% pct = shopping_list.progress_percentage %>
+
+<%= tag.section id: "shopping_list_body", class: "space-y-5" do %>
+  <%# Summary %>
+  <div class="rounded-xl bg-white p-4 shadow-sm">
+    <div class="grid grid-cols-3 gap-2 text-center">
+      <div>
+        <p class="text-xs text-gray-500">Estimated</p>
+        <p class="font-semibold text-gray-900"><%= money(shopping_list.estimated_total_cents) %></p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500">Left to buy</p>
+        <p class="font-semibold text-gray-900"><%= money(shopping_list.remaining_total_cents) %></p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500">Budget</p>
+        <p class="font-semibold <%= shopping_list.budget_cents ? budget_status_class(shopping_list) : 'text-gray-400' %>">
+          <%= money(shopping_list.budget_cents) %>
+        </p>
+      </div>
+    </div>
+
+    <% if shopping_list.over_budget? %>
+      <p class="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        Over budget by <%= money(shopping_list.estimated_total_cents - shopping_list.budget_cents) %>.
+      </p>
+    <% end %>
+
+    <div class="mt-3">
+      <div class="flex items-center justify-between text-xs text-gray-500">
+        <span><%= bought.size %> of <%= items.size %> bought</span>
+        <span><%= pct %>%</span>
+      </div>
+      <div class="mt-1 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+        <div class="h-full rounded-full bg-emerald-500 transition-all" style="width: <%= pct %>%"></div>
+      </div>
+    </div>
+  </div>
+
+  <%# Add item %>
+  <%= form_with model: new_item, url: shopping_shopping_list_shopping_list_items_path(shopping_list),
+        class: "space-y-2 rounded-xl bg-white p-4 shadow-sm" do |form| %>
+    <% if Current.user.shopping_items.active.any? %>
+      <%= form.collection_select :shopping_item_id, Current.user.shopping_items.active.ordered, :id, :name,
+            { include_blank: "From library (optional)…" },
+            class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    <% end %>
+    <div class="flex gap-2">
+      <%= form.text_field :name, placeholder: "Item name", autocomplete: "off",
+            class: "min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.number_field :quantity, step: "0.01", min: "0", placeholder: "Qty",
+            class: "w-16 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div class="flex gap-2">
+      <%= form.text_field :unit, placeholder: "Unit", autocomplete: "off",
+            class: "w-20 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.number_field :estimated_unit_price, step: "0.01", min: "0", placeholder: "£ each",
+            class: "w-20 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.submit "Add", class: "flex-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <%# To buy %>
+  <div class="space-y-2">
+    <% if to_buy.any? %>
+      <%= render partial: "shopping/shopping_list_items/item", collection: to_buy, as: :item,
+            locals: { shopping_list: shopping_list } %>
+    <% elsif items.empty? %>
+      <%= render "shared/empty_state", message: "No items yet. Add what you need above." %>
+    <% else %>
+      <p class="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">Everything’s in the basket. Nice.</p>
+    <% end %>
+  </div>
+
+  <%# Bought %>
+  <% if bought.any? %>
+    <details>
+      <summary class="cursor-pointer select-none text-sm font-medium text-gray-500">Bought (<%= bought.size %>)</summary>
+      <div class="mt-2 space-y-2">
+        <%= render partial: "shopping/shopping_list_items/item", collection: bought, as: :item,
+              locals: { shopping_list: shopping_list } %>
+      </div>
+    </details>
+  <% end %>
+<% end %>

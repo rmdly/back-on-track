@@ -1,0 +1,35 @@
+<% content_for :title, "Items" %>
+<%= render "shopping/subnav" %>
+
+<header class="mb-4 flex items-end justify-between">
+  <h1 class="text-2xl font-bold tracking-tight">Item library</h1>
+  <%= link_to "New item", new_shopping_shopping_item_path,
+        class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
+</header>
+
+<% if @shopping_items.any? %>
+  <div class="space-y-2">
+    <% @shopping_items.each do |item| %>
+      <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 <%= 'opacity-60' unless item.active? %>">
+        <div class="min-w-0">
+          <p class="font-medium text-gray-900"><%= item.name %></p>
+          <div class="mt-0.5 flex flex-wrap gap-2 text-xs text-gray-500">
+            <% if item.category.present? %><span class="rounded-full bg-gray-100 px-2 py-0.5"><%= item.category.humanize %></span><% end %>
+            <% if item.store %><span><%= item.store.name %></span><% end %>
+            <% if item.estimated_unit_price_cents %><span><%= money(item.estimated_unit_price_cents) %><%= " / #{item.default_unit}" if item.default_unit.present? %></span><% end %>
+          </div>
+        </div>
+        <div class="flex shrink-0 gap-1">
+          <%= link_to "Edit", edit_shopping_shopping_item_path(item), class: "rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-gray-100" %>
+          <%= button_to "Delete", shopping_shopping_item_path(item), method: :delete,
+                class: "rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-red-50 hover:text-red-600",
+                form: { data: { turbo_confirm: "Remove #{item.name}?" } } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <%= render "shared/empty_state",
+        message: "Build a library of items you buy often — chicken, eggs, rice, oats — with prices, to make lists fast.",
+        action_label: "Add your first item", action_path: new_shopping_shopping_item_path %>
+<% end %>

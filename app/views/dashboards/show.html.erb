@@ -1,12 +1,45 @@
-<% content_for :title, "Today" %>
+<% is_today = @date == @today %>
+<% content_for :title, is_today ? "Today" : @date.strftime("%a %-d %b") %>
 
-<header class="mb-6 flex items-end justify-between">
-  <div>
-    <h1 class="text-3xl font-bold tracking-tight">Today</h1>
-    <p class="text-gray-500"><%= @date.strftime("%A, %-d %B") %></p>
+<header class="mb-6">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-1">
+      <%= link_to day_path(@date - 1), class: "rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700", aria: { label: "Previous day" } do %>
+        <span aria-hidden="true">‹</span>
+      <% end %>
+      <div class="px-1">
+        <h1 class="text-2xl font-bold leading-tight tracking-tight">
+          <%= is_today ? "Today" : @date.strftime("%A") %>
+        </h1>
+        <p class="text-sm text-gray-500"><%= @date.strftime("%-d %B %Y") %></p>
+      </div>
+      <%= link_to day_path(@date + 1), class: "rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700", aria: { label: "Next day" } do %>
+        <span aria-hidden="true">›</span>
+      <% end %>
+    </div>
+
+    <div class="flex items-center gap-1">
+      <% unless is_today %>
+        <%= link_to "Today", root_path, class: "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+      <% end %>
+      <%= link_to "Routine", routine_task_templates_path,
+            class: "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+      <%= link_to calendar_path(month: @date.strftime("%Y-%m")),
+            class: "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50",
+            aria: { label: "Open calendar" } do %>
+        Calendar
+      <% end %>
+    </div>
   </div>
-  <%= link_to "Routine", routine_task_templates_path,
-        class: "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
 </header>
 
 <%= render "routine/daily_tasks/checklist", daily_plan: @daily_plan, new_task: @new_task %>
+
+<% if @active_shopping_lists.any? %>
+  <section class="mt-6">
+    <h2 class="mb-2 text-sm font-medium text-gray-500">Shopping</h2>
+    <div class="space-y-2">
+      <%= render partial: "shopping/shopping_lists/active_card", collection: @active_shopping_lists, as: :shopping_list %>
+    </div>
+  </section>
+<% end %>

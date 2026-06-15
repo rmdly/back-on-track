@@ -1,0 +1,7 @@
+<% content_for :title, "Edit store" %>
+<header class="mb-6">
+  <%= link_to "← Stores", shopping_stores_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight">Edit store</h1>
+</header>
+
+<%= render "form", store: @store, url: shopping_store_path(@store), submit_label: "Save changes" %>

@@ -1,0 +1,45 @@
+<% content_for :title, @month.strftime("%B %Y") %>
+
+<header class="mb-5 flex items-center justify-between">
+  <%= link_to calendar_path(month: (@month << 1).strftime("%Y-%m")),
+        class: "rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700", aria: { label: "Previous month" } do %>
+    <span aria-hidden="true">‹</span>
+  <% end %>
+
+  <div class="text-center">
+    <h1 class="text-xl font-bold tracking-tight"><%= @month.strftime("%B %Y") %></h1>
+    <%= link_to "Today", root_path, class: "text-sm text-emerald-600 hover:underline" %>
+  </div>
+
+  <%= link_to calendar_path(month: (@month >> 1).strftime("%Y-%m")),
+        class: "rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700", aria: { label: "Next month" } do %>
+    <span aria-hidden="true">›</span>
+  <% end %>
+</header>
+
+<div class="grid grid-cols-7 gap-1">
+  <% @weeks.first.each do |day| %>
+    <div class="pb-1 text-center text-xs font-medium uppercase tracking-wide text-gray-400">
+      <%= day.strftime("%a").first(2) %>
+    </div>
+  <% end %>
+
+  <% @weeks.each do |week| %>
+    <% week.each do |day| %>
+      <% in_month = day.month == @month.month %>
+      <% is_today = day == @today %>
+      <% plan = @plans_by_date[day] %>
+      <% pct = plan&.completion_percentage %>
+      <%= link_to day_path(day),
+            class: "flex min-h-16 flex-col rounded-lg border p-1.5 text-sm transition-colors #{in_month ? 'bg-white border-gray-200 hover:border-emerald-400' : 'bg-gray-50 border-transparent text-gray-300'} #{'ring-2 ring-emerald-500' if is_today}" do %>
+        <span class="font-medium <%= 'text-emerald-600' if is_today %>"><%= day.day %></span>
+        <% if plan && plan.daily_tasks.any? %>
+          <span class="mt-auto flex items-center gap-1 text-xs <%= pct == 100 ? 'text-emerald-600' : 'text-gray-500' %>">
+            <span class="inline-block h-1.5 w-1.5 rounded-full <%= pct == 100 ? 'bg-emerald-500' : 'bg-gray-300' %>"></span>
+            <%= plan.completed_tasks_count %>/<%= plan.daily_tasks.reject(&:skipped?).size %>
+          </span>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

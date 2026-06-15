@@ -1,0 +1,7 @@
+<% content_for :title, "New shopping list" %>
+<header class="mb-6">
+  <%= link_to "← Lists", shopping_shopping_lists_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight">New shopping list</h1>
+</header>
+
+<%= render "form", shopping_list: @shopping_list, url: shopping_shopping_lists_path, submit_label: "Create list" %>

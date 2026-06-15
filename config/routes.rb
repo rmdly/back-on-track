@@ -4,7 +4,10 @@ Rails.application.routes.draw do
   resource :registration, only: [:new, :create]
 
   root "dashboards#show"
-  resource :dashboard, only: :show
+  # Day view: the dashboard renders any date. Today is the default (root).
+  get "days/:date", to: "dashboards#show", as: :day, constraints: { date: /\d{4}-\d{2}-\d{2}/ }
+  # Full month calendar; click a day to open its view.
+  get "calendar(/:month)", to: "calendars#show", as: :calendar, constraints: { month: /\d{4}-\d{2}/ }
 
   namespace :routine do
     resources :task_templates, except: :show
@@ -12,6 +15,18 @@ Rails.application.routes.draw do
       patch :complete, on: :member
       patch :reopen, on: :member
       patch :skip, on: :member
+    end
+  end
+
+  namespace :shopping do
+    resources :stores, except: :show
+    resources :shopping_items, except: :show
+    resources :shopping_lists do
+      resources :shopping_list_items, only: [:create]
+    end
+    resources :shopping_list_items, only: [:edit, :update, :destroy] do
+      patch :buy, on: :member
+      patch :unbuy, on: :member
     end
   end
 

@@ -1,0 +1,31 @@
+<% content_for :title, "Stores" %>
+<%= render "shopping/subnav" %>
+
+<header class="mb-4 flex items-end justify-between">
+  <h1 class="text-2xl font-bold tracking-tight">Stores</h1>
+  <%= link_to "New store", new_shopping_store_path,
+        class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
+</header>
+
+<% if @stores.any? %>
+  <div class="space-y-2">
+    <% @stores.each do |store| %>
+      <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 <%= 'opacity-60' unless store.active? %>">
+        <div>
+          <p class="font-medium text-gray-900"><%= store.name %></p>
+          <% unless store.active? %><p class="text-xs text-gray-400">Inactive</p><% end %>
+        </div>
+        <div class="flex shrink-0 gap-1">
+          <%= link_to "Edit", edit_shopping_store_path(store), class: "rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-gray-100" %>
+          <%= button_to "Delete", shopping_store_path(store), method: :delete,
+                class: "rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-red-50 hover:text-red-600",
+                form: { data: { turbo_confirm: "Remove #{store.name}?" } } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <%= render "shared/empty_state",
+        message: "Add the shops you buy from — Aldi, Lidl, Tesco — so you can split lists by store.",
+        action_label: "Add your first store", action_path: new_shopping_store_path %>
+<% end %>
