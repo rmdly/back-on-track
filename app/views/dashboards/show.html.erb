@@ -52,6 +52,31 @@
   </section>
 <% end %>
 
+<% if @planned_workouts.any? %>
+  <section class="mt-6">
+    <h2 class="mb-2 text-sm font-medium text-gray-500">Training</h2>
+    <div class="space-y-2">
+      <% @planned_workouts.each do |planned_workout| %>
+        <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-3 py-2.5">
+          <div>
+            <span class="font-medium text-gray-800"><%= planned_workout.name %></span>
+            <% if planned_workout.completed? %>
+              <span class="ml-1 text-xs text-emerald-600">done</span>
+            <% end %>
+          </div>
+          <% if planned_workout.workout_session %>
+            <%= link_to "Open", training_workout_session_path(planned_workout.workout_session),
+                  class: "rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50" %>
+          <% else %>
+            <%= button_to "Start workout", start_training_planned_workout_path(planned_workout),
+                  class: "rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-500" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
 <% if @active_shopping_lists.any? %>
   <section class="mt-6">
     <h2 class="mb-2 text-sm font-medium text-gray-500">Shopping</h2>

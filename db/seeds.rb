@@ -123,6 +123,52 @@ meals.each do |name, meal_type, protein, effort, prep, cost, ingredients|
   end
 end
 
+# --- Training (Phase 4) ---
+
+exercises = [
+  ["Bench Press", "strength", "chest", "Barbell"],
+  ["Squat", "strength", "legs", "Barbell"],
+  ["Deadlift", "strength", "back", "Barbell"],
+  ["Shoulder Press", "strength", "shoulders", "Barbell"],
+  ["Lat Pulldown", "strength", "back", "Cable"],
+  ["Seated Row", "strength", "back", "Cable"],
+  ["Dumbbell Curl", "strength", "arms", "Dumbbell"],
+  ["Tricep Pushdown", "strength", "arms", "Cable"],
+  ["Leg Press", "strength", "legs", "Machine"],
+  ["Romanian Deadlift", "strength", "legs", "Barbell"],
+  ["Plank", "bodyweight", "core", "Bodyweight"],
+  ["Treadmill Run", "cardio", "cardio", "Treadmill"]
+]
+
+exercises.each do |name, type, group, equipment|
+  user.exercises.find_or_create_by!(name: name) do |e|
+    e.exercise_type = type
+    e.muscle_group = group
+    e.equipment = equipment
+    e.default_unit = (type == "strength" ? "kg" : nil)
+  end
+end
+
+workout_templates = {
+  "Push Day" => [["Bench Press", 4, 8], ["Shoulder Press", 3, 10], ["Tricep Pushdown", 3, 12]],
+  "Pull Day" => [["Deadlift", 3, 5], ["Lat Pulldown", 3, 10], ["Seated Row", 3, 10], ["Dumbbell Curl", 3, 12]],
+  "Legs"     => [["Squat", 4, 8], ["Leg Press", 3, 10], ["Romanian Deadlift", 3, 10]],
+  "Full Body" => [["Squat", 3, 8], ["Bench Press", 3, 8], ["Seated Row", 3, 10]]
+}
+
+workout_templates.each do |name, rows|
+  template = user.workout_templates.find_or_create_by!(name: name)
+  next if template.workout_template_exercises.any?
+
+  rows.each_with_index do |(exercise_name, sets, reps), index|
+    template.workout_template_exercises.create!(
+      exercise: user.exercises.find_by(name: exercise_name),
+      target_sets: sets, target_reps: reps, position: index
+    )
+  end
+end
+
 puts "Seeded #{User.count} user(s), #{user.task_templates.count} routine items, " \
-     "#{user.stores.count} stores, #{user.shopping_items.count} shopping items " \
-     "and #{user.meals.count} meals."
+     "#{user.stores.count} stores, #{user.shopping_items.count} shopping items, " \
+     "#{user.meals.count} meals, #{user.exercises.count} exercises " \
+     "and #{user.workout_templates.count} workout templates."

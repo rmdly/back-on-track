@@ -1,0 +1,52 @@
+<%# locals: workout_template:, template_exercise: %>
+<%= tag.section id: "template_exercises", class: "space-y-3" do %>
+  <h2 class="text-sm font-medium text-gray-500">Exercises</h2>
+
+  <% if workout_template.workout_template_exercises.any? %>
+    <div class="space-y-2">
+      <% workout_template.workout_template_exercises.each do |template_exercise| %>
+        <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-3 py-2.5">
+          <div>
+            <span class="font-medium text-gray-900"><%= template_exercise.exercise.name %></span>
+            <span class="ml-1 text-sm text-gray-500">
+              <%= [template_exercise.target_sets, template_exercise.target_reps].compact.join(" × ") %>
+              <%= "@ #{template_exercise.target_weight.to_s.sub(/\.0+$/, '')}" if template_exercise.target_weight %>
+            </span>
+          </div>
+          <div class="flex shrink-0 gap-1">
+            <%= link_to "Edit", edit_training_workout_template_exercise_path(template_exercise),
+                  class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-700" %>
+            <%= button_to training_workout_template_exercise_path(template_exercise), method: :delete,
+                  class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-red-50 hover:text-red-600",
+                  form: { data: { turbo_confirm: "Remove #{template_exercise.exercise.name}?" } } do %>✕<% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-sm text-gray-500">No exercises yet. Add some below.</p>
+  <% end %>
+
+  <% if Current.user.exercises.active.any? %>
+    <%= form_with model: template_exercise, url: training_workout_template_workout_template_exercises_path(workout_template),
+          class: "space-y-2 rounded-xl bg-white p-3 shadow-sm" do |form| %>
+      <%= form.collection_select :exercise_id, Current.user.exercises.active.ordered, :id, :name,
+            { prompt: "Choose an exercise" },
+            class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <div class="flex gap-2">
+        <%= form.number_field :target_sets, min: "1", placeholder: "Sets",
+              class: "w-20 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+        <%= form.number_field :target_reps, min: "1", placeholder: "Reps",
+              class: "w-20 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+        <%= form.number_field :target_weight, step: "0.5", min: "0", placeholder: "Weight",
+              class: "w-24 rounded-lg border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+        <%= form.submit "Add", class: "flex-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-sm text-gray-500">
+      <%= link_to "Add an exercise to your library", new_training_exercise_path, class: "text-emerald-600 hover:underline" %>
+      first.
+    </p>
+  <% end %>
+<% end %>

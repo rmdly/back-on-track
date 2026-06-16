@@ -1,6 +1,7 @@
 class WeeklyPlan < ApplicationRecord
   belongs_to :user
   has_many :planned_meals, dependent: :destroy
+  has_many :planned_workouts, dependent: :destroy
   has_many :shopping_lists, dependent: :nullify
 
   before_validation :set_ends_on
@@ -30,6 +31,10 @@ class WeeklyPlan < ApplicationRecord
 
   def planned_meals_for(date)
     planned_meals.select { |meal| meal.planned_on == date }
+  end
+
+  def planned_workouts_for(date)
+    planned_workouts.select { |workout| workout.planned_on == date }
   end
 
   def shopping_total_cents

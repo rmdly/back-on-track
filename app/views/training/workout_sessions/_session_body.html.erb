@@ -1,0 +1,46 @@
+<%# locals: workout_session:, new_workout_exercise: %>
+<%= tag.section id: "workout_body", class: "space-y-5" do %>
+  <%# Summary %>
+  <div class="rounded-xl bg-white p-4 shadow-sm">
+    <div class="grid grid-cols-3 gap-2 text-center">
+      <div>
+        <p class="text-xs text-gray-500">Sets</p>
+        <p class="font-semibold text-gray-900"><%= workout_session.total_sets %></p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500">Volume</p>
+        <p class="font-semibold text-gray-900"><%= workout_session.total_volume.to_i %></p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500">Status</p>
+        <p class="font-semibold <%= workout_session.completed? ? 'text-emerald-600' : 'text-amber-600' %>">
+          <%= workout_session.completed? ? "Done" : "Active" %>
+        </p>
+      </div>
+    </div>
+    <% unless workout_session.completed? %>
+      <%= button_to "Finish workout", finish_training_workout_session_path(workout_session), method: :patch,
+            class: "mt-3 block w-full rounded-lg bg-emerald-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-500" %>
+    <% end %>
+  </div>
+
+  <%# Exercises %>
+  <% workout_session.workout_exercises.each do |workout_exercise| %>
+    <%= render "training/workout_exercises/workout_exercise", workout_exercise: workout_exercise %>
+  <% end %>
+
+  <%# Add an exercise %>
+  <% if Current.user.exercises.active.any? %>
+    <%= form_with model: new_workout_exercise, url: training_workout_session_workout_exercises_path(workout_session),
+          class: "flex gap-2 rounded-xl bg-white p-3 shadow-sm" do |form| %>
+      <%= form.collection_select :exercise_id, Current.user.exercises.active.ordered, :id, :name,
+            { prompt: "Add an exercise" },
+            class: "min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <%= form.submit "Add", class: "rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 cursor-pointer" %>
+    <% end %>
+  <% else %>
+    <p class="text-sm text-gray-500">
+      <%= link_to "Add an exercise to your library", new_training_exercise_path, class: "text-emerald-600 hover:underline" %> first.
+    </p>
+  <% end %>
+<% end %>

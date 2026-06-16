@@ -41,6 +41,28 @@ Rails.application.routes.draw do
     resources :planned_meals, only: [:create, :edit, :update, :destroy]
   end
 
+  namespace :training do
+    resources :exercises, except: :show
+    resources :workout_templates do
+      resources :workout_template_exercises, only: [:create]
+    end
+    resources :workout_template_exercises, only: [:edit, :update, :destroy]
+    resources :planned_workouts, only: [:create, :destroy] do
+      post :start, on: :member
+    end
+    resources :workout_sessions, except: [:edit, :update] do
+      patch :finish, on: :member
+      resources :workout_exercises, only: [:create]
+    end
+    resources :workout_exercises, only: [:destroy] do
+      resources :workout_sets, only: [:create]
+    end
+    resources :workout_sets, only: [:update, :destroy] do
+      patch :complete, on: :member
+      post :duplicate, on: :member
+    end
+  end
+
   resource :settings, only: [:show, :edit, :update]
 
   # Test-only deterministic sign-in for system tests (never mounted in prod).

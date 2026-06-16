@@ -10,6 +10,7 @@ class DashboardsController < ApplicationController
     weekly_plan = WeeklyPlan.current_for(Current.user, @date)
     @planned_meals = weekly_plan.planned_meals_for(@date)
                                 .sort_by { |meal| PlannedMeal.meal_types.keys.index(meal.meal_type) }
+    @planned_workouts = weekly_plan.planned_workouts_for(@date)
   end
 
   private

@@ -1,0 +1,32 @@
+<% content_for :title, "Start workout" %>
+<header class="mb-6">
+  <%= link_to "← Workouts", training_workout_sessions_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight">Start workout</h1>
+</header>
+
+<%= form_with model: @workout_session, url: training_workout_sessions_path, class: "space-y-4" do |form| %>
+  <%= render "shared/form_errors", model: @workout_session %>
+
+  <% if @workout_templates.any? %>
+    <div>
+      <%= form.label :workout_template_id, "From a template (optional)", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.collection_select :workout_template_id, @workout_templates, :id, :name, { include_blank: "Blank workout" },
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+      <p class="mt-1 text-xs text-gray-500">Picking a template copies its exercises and target sets.</p>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, "Name (optional)", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :name, placeholder: "e.g. Push Day",
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <div>
+    <%= form.label :performed_on, "Date", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.date_field :performed_on,
+          class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+  </div>
+
+  <%= form.submit "Start workout", class: "w-full rounded-lg bg-emerald-600 px-4 py-2.5 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+<% end %>

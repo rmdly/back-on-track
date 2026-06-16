@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_15_100004) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_15_110006) do
   create_table "daily_plans", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.date "date", null: false
@@ -41,6 +41,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_100004) do
     t.index ["daily_plan_id"], name: "index_daily_tasks_on_daily_plan_id"
     t.index ["task_template_id"], name: "index_daily_tasks_on_task_template_id"
     t.index ["user_id"], name: "index_daily_tasks_on_user_id"
+  end
+
+  create_table "exercises", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.string "default_unit"
+    t.string "equipment"
+    t.string "exercise_type", default: "strength", null: false
+    t.string "muscle_group"
+    t.string "name", null: false
+    t.text "notes"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id", "active"], name: "index_exercises_on_user_id_and_active"
+    t.index ["user_id", "name"], name: "index_exercises_on_user_id_and_name", unique: true
+    t.index ["user_id"], name: "index_exercises_on_user_id"
   end
 
   create_table "meal_ingredients", force: :cascade do |t|
@@ -89,6 +105,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_100004) do
     t.index ["user_id"], name: "index_planned_meals_on_user_id"
     t.index ["weekly_plan_id", "planned_on"], name: "index_planned_meals_on_weekly_plan_id_and_planned_on"
     t.index ["weekly_plan_id"], name: "index_planned_meals_on_weekly_plan_id"
+  end
+
+  create_table "planned_workouts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.text "notes"
+    t.date "planned_on", null: false
+    t.string "status", default: "planned", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.integer "weekly_plan_id"
+    t.integer "workout_session_id"
+    t.integer "workout_template_id"
+    t.index ["user_id", "planned_on"], name: "index_planned_workouts_on_user_id_and_planned_on"
+    t.index ["user_id"], name: "index_planned_workouts_on_user_id"
+    t.index ["weekly_plan_id"], name: "index_planned_workouts_on_weekly_plan_id"
+    t.index ["workout_session_id"], name: "index_planned_workouts_on_workout_session_id"
+    t.index ["workout_template_id"], name: "index_planned_workouts_on_workout_template_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -215,16 +249,92 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_100004) do
     t.index ["user_id"], name: "index_weekly_plans_on_user_id"
   end
 
+  create_table "workout_exercises", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "exercise_id", null: false
+    t.text "notes"
+    t.integer "position", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "workout_session_id", null: false
+    t.index ["exercise_id"], name: "index_workout_exercises_on_exercise_id"
+    t.index ["workout_session_id", "position"], name: "index_workout_exercises_on_session_and_position"
+    t.index ["workout_session_id"], name: "index_workout_exercises_on_workout_session_id"
+  end
+
+  create_table "workout_sessions", force: :cascade do |t|
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.text "notes"
+    t.date "performed_on", null: false
+    t.integer "planned_workout_id"
+    t.datetime "started_at"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.integer "workout_template_id"
+    t.index ["planned_workout_id"], name: "index_workout_sessions_on_planned_workout_id"
+    t.index ["user_id", "performed_on"], name: "index_workout_sessions_on_user_id_and_performed_on"
+    t.index ["user_id"], name: "index_workout_sessions_on_user_id"
+    t.index ["workout_template_id"], name: "index_workout_sessions_on_workout_template_id"
+  end
+
+  create_table "workout_sets", force: :cascade do |t|
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.decimal "distance", precision: 8, scale: 2
+    t.integer "duration_seconds"
+    t.text "notes"
+    t.integer "position", default: 0, null: false
+    t.integer "reps"
+    t.decimal "rpe", precision: 3, scale: 1
+    t.datetime "updated_at", null: false
+    t.decimal "weight", precision: 8, scale: 2
+    t.integer "workout_exercise_id", null: false
+    t.index ["workout_exercise_id", "position"], name: "index_workout_sets_on_workout_exercise_id_and_position"
+    t.index ["workout_exercise_id"], name: "index_workout_sets_on_workout_exercise_id"
+  end
+
+  create_table "workout_template_exercises", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "exercise_id", null: false
+    t.text "notes"
+    t.integer "position", default: 0, null: false
+    t.integer "target_reps"
+    t.integer "target_sets"
+    t.decimal "target_weight", precision: 8, scale: 2
+    t.datetime "updated_at", null: false
+    t.integer "workout_template_id", null: false
+    t.index ["exercise_id"], name: "index_workout_template_exercises_on_exercise_id"
+    t.index ["workout_template_id", "position"], name: "index_wte_on_template_and_position"
+    t.index ["workout_template_id"], name: "index_workout_template_exercises_on_workout_template_id"
+  end
+
+  create_table "workout_templates", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id", "active"], name: "index_workout_templates_on_user_id_and_active"
+    t.index ["user_id"], name: "index_workout_templates_on_user_id"
+  end
+
   add_foreign_key "daily_plans", "users"
   add_foreign_key "daily_tasks", "daily_plans"
   add_foreign_key "daily_tasks", "task_templates"
   add_foreign_key "daily_tasks", "users"
+  add_foreign_key "exercises", "users"
   add_foreign_key "meal_ingredients", "meals"
   add_foreign_key "meal_ingredients", "shopping_items"
   add_foreign_key "meals", "users"
   add_foreign_key "planned_meals", "meals"
   add_foreign_key "planned_meals", "users"
   add_foreign_key "planned_meals", "weekly_plans"
+  add_foreign_key "planned_workouts", "users"
+  add_foreign_key "planned_workouts", "weekly_plans"
+  add_foreign_key "planned_workouts", "workout_sessions"
+  add_foreign_key "planned_workouts", "workout_templates"
   add_foreign_key "sessions", "users"
   add_foreign_key "shopping_items", "stores"
   add_foreign_key "shopping_items", "users"
@@ -238,4 +348,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_100004) do
   add_foreign_key "stores", "users"
   add_foreign_key "task_templates", "users"
   add_foreign_key "weekly_plans", "users"
+  add_foreign_key "workout_exercises", "exercises"
+  add_foreign_key "workout_exercises", "workout_sessions"
+  add_foreign_key "workout_sessions", "users"
+  add_foreign_key "workout_sessions", "workout_templates"
+  add_foreign_key "workout_sets", "workout_exercises"
+  add_foreign_key "workout_template_exercises", "exercises"
+  add_foreign_key "workout_template_exercises", "workout_templates"
+  add_foreign_key "workout_templates", "users"
 end

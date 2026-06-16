@@ -1,0 +1,25 @@
+<% content_for :title, @workout_template.name %>
+
+<header class="mb-5">
+  <%= link_to "← Templates", training_workout_templates_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <div class="mt-2 flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight"><%= @workout_template.name %></h1>
+      <% if @workout_template.description.present? %>
+        <p class="text-sm text-gray-500"><%= @workout_template.description %></p>
+      <% end %>
+    </div>
+    <div class="flex shrink-0 gap-1">
+      <%= link_to "Edit", edit_training_workout_template_path(@workout_template), class: "rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100" %>
+      <%= button_to "Delete", training_workout_template_path(@workout_template), method: :delete,
+            class: "rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-red-50 hover:text-red-600",
+            form: { data: { turbo_confirm: "Delete this template?" } } %>
+    </div>
+  </div>
+</header>
+
+<%= button_to "Start this workout", training_workout_sessions_path,
+      params: { workout_session: { workout_template_id: @workout_template.id } },
+      class: "mb-5 block w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-center font-medium text-white hover:bg-emerald-500" %>
+
+<%= render "training/workout_templates/exercises", workout_template: @workout_template, template_exercise: @template_exercise %>

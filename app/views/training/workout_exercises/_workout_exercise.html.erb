@@ -1,0 +1,48 @@
+<%# locals: workout_exercise: %>
+<% previous = workout_exercise.previous_performance %>
+<%= tag.div id: dom_id(workout_exercise), class: "rounded-xl border border-gray-200 bg-white p-3 shadow-sm" do %>
+  <div class="flex items-center justify-between">
+    <h3 class="font-semibold text-gray-900"><%= workout_exercise.exercise.name %></h3>
+    <%= button_to training_workout_exercise_path(workout_exercise), method: :delete,
+          class: "rounded-md px-2 py-1 text-xs text-gray-400 hover:bg-red-50 hover:text-red-600",
+          form: { data: { turbo_confirm: "Remove this exercise?" } } do %>✕<% end %>
+  </div>
+
+  <% if previous %>
+    <p class="mt-0.5 text-xs text-gray-400">
+      Last time (<%= previous.workout_session.performed_on.strftime("%-d %b") %>):
+      <%= previous.workout_sets.map { |s| "#{s.weight.to_s.sub(/\.0+$/, '')}×#{s.reps}" }.join(", ").presence || "—" %>
+    </p>
+  <% end %>
+
+  <div class="mt-3 space-y-1.5">
+    <% workout_exercise.workout_sets.each_with_index do |set, index| %>
+      <div class="flex items-center gap-2">
+        <%= button_to complete_training_workout_set_path(set), method: :patch,
+              class: "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 #{set.completed? ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300 text-transparent hover:border-emerald-500'}",
+              aria: { label: "Toggle set #{index + 1} complete" } do %>✓<% end %>
+        <span class="w-4 text-xs text-gray-400"><%= index + 1 %></span>
+        <%= form_with model: set, url: training_workout_set_path(set), method: :patch, class: "flex flex-1 items-center gap-2" do |form| %>
+          <%= form.number_field :weight, step: "0.5", min: "0", placeholder: "kg",
+                class: "w-20 rounded-lg border border-gray-300 px-2 py-1.5 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+          <span class="text-gray-400">×</span>
+          <%= form.number_field :reps, min: "0", placeholder: "reps",
+                class: "w-16 rounded-lg border border-gray-300 px-2 py-1.5 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+          <%= form.submit "Save", class: "rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 cursor-pointer" %>
+        <% end %>
+        <%= button_to training_workout_set_path(set), method: :delete,
+              class: "shrink-0 rounded-md px-2 py-1 text-xs text-gray-300 hover:bg-red-50 hover:text-red-600",
+              aria: { label: "Delete set #{index + 1}" } do %>✕<% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-3 flex gap-2">
+    <%= button_to "Add set", training_workout_exercise_workout_sets_path(workout_exercise),
+          class: "rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 cursor-pointer" %>
+    <% if workout_exercise.workout_sets.any? %>
+      <%= button_to "Repeat last", duplicate_training_workout_set_path(workout_exercise.workout_sets.last),
+            class: "rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 cursor-pointer" %>
+    <% end %>
+  </div>
+<% end %>

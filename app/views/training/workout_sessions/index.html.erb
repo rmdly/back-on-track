@@ -1,0 +1,33 @@
+<% content_for :title, "Workouts" %>
+<%= render "training/subnav" %>
+
+<header class="mb-4 flex items-end justify-between">
+  <h1 class="text-2xl font-bold tracking-tight">Workouts</h1>
+  <%= link_to "Start workout", new_training_workout_session_path,
+        class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
+</header>
+
+<% if @workout_sessions.any? %>
+  <div class="space-y-2">
+    <% @workout_sessions.each do |session| %>
+      <%= link_to training_workout_session_path(session),
+            class: "block rounded-xl border border-gray-200 bg-white px-4 py-3 hover:border-emerald-400" do %>
+        <div class="flex items-center justify-between">
+          <p class="font-medium text-gray-900"><%= session.name.presence || "Workout" %></p>
+          <% unless session.completed? %>
+            <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">In progress</span>
+          <% end %>
+        </div>
+        <div class="mt-1 flex flex-wrap gap-3 text-xs text-gray-500">
+          <span><%= session.performed_on.strftime("%a %-d %b") %></span>
+          <span><%= pluralize(session.total_sets, "set") %></span>
+          <% if session.total_volume.positive? %><span><%= session.total_volume.to_i %> volume</span><% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <%= render "shared/empty_state",
+        message: "Start your first workout — from a template like Push Day, or a blank session.",
+        action_label: "Start workout", action_path: new_training_workout_session_path %>
+<% end %>

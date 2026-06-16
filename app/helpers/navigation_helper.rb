@@ -6,7 +6,7 @@ module NavigationHelper
       { key: :today,    label: "Today",    path: root_path },
       { key: :food,     label: "Food",     path: food_plan_path },
       { key: :shopping, label: "Shopping", path: shopping_shopping_lists_path },
-      { key: :training, label: "Training" },
+      { key: :training, label: "Training", path: training_workout_sessions_path },
       { key: :running,  label: "Running" },
       { key: :settings, label: "Settings", path: settings_path }
     ]
@@ -17,6 +17,7 @@ module NavigationHelper
     when :today    then controller_name.in?(%w[dashboards calendars]) || controller_path == "routine/daily_tasks"
     when :food     then controller_path.start_with?("food/")
     when :shopping then controller_path.start_with?("shopping/")
+    when :training then controller_path.start_with?("training/")
     when :settings then controller_name == "settings"
     else false
     end

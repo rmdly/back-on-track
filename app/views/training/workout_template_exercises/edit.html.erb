@@ -1,0 +1,32 @@
+<% content_for :title, "Edit template exercise" %>
+<header class="mb-6">
+  <%= link_to "← Back to template", training_workout_template_path(@workout_template), class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight"><%= @template_exercise.exercise.name %></h1>
+</header>
+
+<%= form_with model: @template_exercise, url: training_workout_template_exercise_path(@template_exercise), class: "space-y-4" do |form| %>
+  <%= render "shared/form_errors", model: @template_exercise %>
+
+  <div class="grid grid-cols-3 gap-4">
+    <div>
+      <%= form.label :target_sets, "Sets", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :target_sets, min: "1",
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :target_reps, "Reps", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :target_reps, min: "1",
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+    <div>
+      <%= form.label :target_weight, "Weight", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :target_weight, step: "0.5", min: "0",
+            class: "mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" %>
+    </div>
+  </div>
+
+  <div class="flex gap-2">
+    <%= form.submit "Save", class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500 cursor-pointer" %>
+    <%= link_to "Cancel", training_workout_template_path(@workout_template), class: "rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50" %>
+  </div>
+<% end %>

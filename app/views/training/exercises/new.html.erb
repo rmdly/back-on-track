@@ -1,0 +1,7 @@
+<% content_for :title, "New exercise" %>
+<header class="mb-6">
+  <%= link_to "← Exercises", training_exercises_path, class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight">New exercise</h1>
+</header>
+
+<%= render "form", exercise: @exercise, url: training_exercises_path, submit_label: "Add exercise" %>

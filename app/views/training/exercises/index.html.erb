@@ -1,0 +1,35 @@
+<% content_for :title, "Exercises" %>
+<%= render "training/subnav" %>
+
+<header class="mb-4 flex items-end justify-between">
+  <h1 class="text-2xl font-bold tracking-tight">Exercises</h1>
+  <%= link_to "New exercise", new_training_exercise_path,
+        class: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" %>
+</header>
+
+<% if @exercises.any? %>
+  <div class="space-y-2">
+    <% @exercises.each do |exercise| %>
+      <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 <%= 'opacity-60' unless exercise.active? %>">
+        <div>
+          <p class="font-medium text-gray-900"><%= exercise.name %></p>
+          <div class="mt-0.5 flex flex-wrap gap-2 text-xs text-gray-500">
+            <span class="rounded-full bg-gray-100 px-2 py-0.5"><%= exercise.exercise_type.humanize %></span>
+            <% if exercise.muscle_group.present? %><span><%= exercise.muscle_group.humanize %></span><% end %>
+            <% if (best = exercise.best_set) && best.weight %><span>PR <%= best.weight.to_s.sub(/\.0+$/, "") %></span><% end %>
+          </div>
+        </div>
+        <div class="flex shrink-0 gap-1">
+          <%= link_to "Edit", edit_training_exercise_path(exercise), class: "rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-gray-100" %>
+          <%= button_to "Delete", training_exercise_path(exercise), method: :delete,
+                class: "rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-red-50 hover:text-red-600",
+                form: { data: { turbo_confirm: "Remove #{exercise.name}?" } } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <%= render "shared/empty_state",
+        message: "Build your exercise library — Bench Press, Squat, Deadlift — then group them into workout templates.",
+        action_label: "Add your first exercise", action_path: new_training_exercise_path %>
+<% end %>

@@ -1,0 +1,7 @@
+<% content_for :title, "Edit workout template" %>
+<header class="mb-6">
+  <%= link_to "← Back to template", training_workout_template_path(@workout_template), class: "text-sm text-gray-500 hover:text-gray-900" %>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight">Edit workout template</h1>
+</header>
+
+<%= render "form", workout_template: @workout_template, url: training_workout_template_path(@workout_template), submit_label: "Save changes" %>
