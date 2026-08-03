@@ -15,7 +15,7 @@ class CreateMeals < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :meals, [:user_id, :active]
-    add_index :meals, [:user_id, :name]
+    add_index :meals, [ :user_id, :active ]
+    add_index :meals, [ :user_id, :name ]
   end
 end

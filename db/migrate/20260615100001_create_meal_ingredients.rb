@@ -11,6 +11,6 @@ class CreateMealIngredients < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :meal_ingredients, [:meal_id, :position]
+    add_index :meal_ingredients, [ :meal_id, :position ]
   end
 end

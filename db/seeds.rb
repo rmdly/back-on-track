@@ -30,7 +30,7 @@ end
 
 # --- Shopping (Phase 2) ---
 
-["Aldi", "Lidl", "Tesco", "Iceland", "Home Bargains"].each_with_index do |name, index|
+[ "Aldi", "Lidl", "Tesco", "Iceland", "Home Bargains" ].each_with_index do |name, index|
   user.stores.find_or_create_by!(name: name) { |s| s.position = index }
 end
 
@@ -38,29 +38,29 @@ aldi = user.stores.find_by(name: "Aldi")
 
 shopping_items = [
   # [name, category, default_quantity, default_unit, price_pence, store]
-  ["Chicken breast",   "protein",   1,   "kg",   549, aldi],
-  ["Eggs",             "protein",   12,  "pack", 189, aldi],
-  ["Tuna",             "protein",   4,   "pack", 350, aldi],
-  ["Greek yoghurt",    "dairy",     1,   "tub",  150, aldi],
-  ["Mince",            "protein",   500, "g",    279, aldi],
-  ["Turkey slices",    "protein",   1,   "pack", 149, aldi],
-  ["Rice",             "carbs",     1,   "kg",   175, aldi],
-  ["Pasta",            "carbs",     500, "g",     69, aldi],
-  ["Oats",             "carbs",     1,   "kg",   135, aldi],
-  ["Potatoes",         "carbs",     2.5, "kg",   199, aldi],
-  ["Wraps",            "carbs",     8,   "pack", 110, aldi],
-  ["Bagels",           "carbs",     5,   "pack", 119, aldi],
-  ["Bananas",          "fruit_veg", 5,   "pack",  79, aldi],
-  ["Apples",           "fruit_veg", 6,   "pack", 165, aldi],
-  ["Frozen mixed veg", "fruit_veg", 1,   "bag",  119, aldi],
-  ["Spinach",          "fruit_veg", 1,   "bag",   89, aldi],
-  ["Broccoli",         "fruit_veg", 1,   "head",  59, aldi],
-  ["Onions",           "fruit_veg", 1,   "bag",   89, aldi],
-  ["Coffee",           "drinks",    200, "g",    329, aldi],
-  ["Milk",             "dairy",     2,   "litre", 125, aldi],
-  ["Peanut butter",    "other",     1,   "jar",  155, aldi],
-  ["Light mayo",       "other",     1,   "jar",  120, aldi],
-  ["Pasta sauce",      "other",     1,   "jar",   95, aldi]
+  [ "Chicken breast",   "protein",   1,   "kg",   549, aldi ],
+  [ "Eggs",             "protein",   12,  "pack", 189, aldi ],
+  [ "Tuna",             "protein",   4,   "pack", 350, aldi ],
+  [ "Greek yoghurt",    "dairy",     1,   "tub",  150, aldi ],
+  [ "Mince",            "protein",   500, "g",    279, aldi ],
+  [ "Turkey slices",    "protein",   1,   "pack", 149, aldi ],
+  [ "Rice",             "carbs",     1,   "kg",   175, aldi ],
+  [ "Pasta",            "carbs",     500, "g",     69, aldi ],
+  [ "Oats",             "carbs",     1,   "kg",   135, aldi ],
+  [ "Potatoes",         "carbs",     2.5, "kg",   199, aldi ],
+  [ "Wraps",            "carbs",     8,   "pack", 110, aldi ],
+  [ "Bagels",           "carbs",     5,   "pack", 119, aldi ],
+  [ "Bananas",          "fruit_veg", 5,   "pack",  79, aldi ],
+  [ "Apples",           "fruit_veg", 6,   "pack", 165, aldi ],
+  [ "Frozen mixed veg", "fruit_veg", 1,   "bag",  119, aldi ],
+  [ "Spinach",          "fruit_veg", 1,   "bag",   89, aldi ],
+  [ "Broccoli",         "fruit_veg", 1,   "head",  59, aldi ],
+  [ "Onions",           "fruit_veg", 1,   "bag",   89, aldi ],
+  [ "Coffee",           "drinks",    200, "g",    329, aldi ],
+  [ "Milk",             "dairy",     2,   "litre", 125, aldi ],
+  [ "Peanut butter",    "other",     1,   "jar",  155, aldi ],
+  [ "Light mayo",       "other",     1,   "jar",  120, aldi ],
+  [ "Pasta sauce",      "other",     1,   "jar",   95, aldi ]
 ]
 
 shopping_items.each do |name, category, qty, unit, pence, store|
@@ -81,27 +81,27 @@ end
 
 meals = [
   # name, meal_type, protein, effort, prep, cost_pence, [[ingredient, qty, unit, library_name], ...]
-  ["Oats with banana", "breakfast", "medium", "easy", 5, 60, [
-    ["Oats", 80, "g", "Oats"], ["Banana", 1, nil, "Bananas"], ["Milk", 200, "ml", "Milk"]
-  ]],
-  ["Greek yoghurt bowl", "breakfast", "high", "easy", 5, 120, [
-    ["Greek yoghurt", 200, "g", "Greek yoghurt"], ["Banana", 1, nil, "Bananas"], ["Peanut butter", 1, "tbsp", "Peanut butter"]
-  ]],
-  ["Egg wraps", "breakfast", "high", "easy", 10, 150, [
-    ["Eggs", 3, nil, "Eggs"], ["Wraps", 2, nil, "Wraps"], ["Spinach", 1, "handful", "Spinach"]
-  ]],
-  ["Chicken rice bowl", "dinner", "high", "medium", 25, 250, [
-    ["Chicken breast", 1, nil, "Chicken breast"], ["Rice", 100, "g", "Rice"], ["Broccoli", 1, "head", "Broccoli"]
-  ]],
-  ["Tuna pasta", "lunch", "high", "easy", 15, 180, [
-    ["Tuna", 1, "tin", "Tuna"], ["Pasta", 100, "g", "Pasta"], ["Light mayo", 1, "tbsp", "Light mayo"]
-  ]],
-  ["Mince and rice", "dinner", "high", "medium", 25, 280, [
-    ["Mince", 250, "g", "Mince"], ["Rice", 100, "g", "Rice"], ["Onions", 1, nil, "Onions"]
-  ]],
-  ["Jacket potato with tuna", "dinner", "high", "easy", 30, 150, [
-    ["Potatoes", 1, nil, "Potatoes"], ["Tuna", 1, "tin", "Tuna"], ["Light mayo", 1, "tbsp", "Light mayo"]
-  ]]
+  [ "Oats with banana", "breakfast", "medium", "easy", 5, 60, [
+    [ "Oats", 80, "g", "Oats" ], [ "Banana", 1, nil, "Bananas" ], [ "Milk", 200, "ml", "Milk" ]
+  ] ],
+  [ "Greek yoghurt bowl", "breakfast", "high", "easy", 5, 120, [
+    [ "Greek yoghurt", 200, "g", "Greek yoghurt" ], [ "Banana", 1, nil, "Bananas" ], [ "Peanut butter", 1, "tbsp", "Peanut butter" ]
+  ] ],
+  [ "Egg wraps", "breakfast", "high", "easy", 10, 150, [
+    [ "Eggs", 3, nil, "Eggs" ], [ "Wraps", 2, nil, "Wraps" ], [ "Spinach", 1, "handful", "Spinach" ]
+  ] ],
+  [ "Chicken rice bowl", "dinner", "high", "medium", 25, 250, [
+    [ "Chicken breast", 1, nil, "Chicken breast" ], [ "Rice", 100, "g", "Rice" ], [ "Broccoli", 1, "head", "Broccoli" ]
+  ] ],
+  [ "Tuna pasta", "lunch", "high", "easy", 15, 180, [
+    [ "Tuna", 1, "tin", "Tuna" ], [ "Pasta", 100, "g", "Pasta" ], [ "Light mayo", 1, "tbsp", "Light mayo" ]
+  ] ],
+  [ "Mince and rice", "dinner", "high", "medium", 25, 280, [
+    [ "Mince", 250, "g", "Mince" ], [ "Rice", 100, "g", "Rice" ], [ "Onions", 1, nil, "Onions" ]
+  ] ],
+  [ "Jacket potato with tuna", "dinner", "high", "easy", 30, 150, [
+    [ "Potatoes", 1, nil, "Potatoes" ], [ "Tuna", 1, "tin", "Tuna" ], [ "Light mayo", 1, "tbsp", "Light mayo" ]
+  ] ]
 ]
 
 meals.each do |name, meal_type, protein, effort, prep, cost, ingredients|
@@ -126,18 +126,18 @@ end
 # --- Training (Phase 4) ---
 
 exercises = [
-  ["Bench Press", "strength", "chest", "Barbell"],
-  ["Squat", "strength", "legs", "Barbell"],
-  ["Deadlift", "strength", "back", "Barbell"],
-  ["Shoulder Press", "strength", "shoulders", "Barbell"],
-  ["Lat Pulldown", "strength", "back", "Cable"],
-  ["Seated Row", "strength", "back", "Cable"],
-  ["Dumbbell Curl", "strength", "arms", "Dumbbell"],
-  ["Tricep Pushdown", "strength", "arms", "Cable"],
-  ["Leg Press", "strength", "legs", "Machine"],
-  ["Romanian Deadlift", "strength", "legs", "Barbell"],
-  ["Plank", "bodyweight", "core", "Bodyweight"],
-  ["Treadmill Run", "cardio", "cardio", "Treadmill"]
+  [ "Bench Press", "strength", "chest", "Barbell" ],
+  [ "Squat", "strength", "legs", "Barbell" ],
+  [ "Deadlift", "strength", "back", "Barbell" ],
+  [ "Shoulder Press", "strength", "shoulders", "Barbell" ],
+  [ "Lat Pulldown", "strength", "back", "Cable" ],
+  [ "Seated Row", "strength", "back", "Cable" ],
+  [ "Dumbbell Curl", "strength", "arms", "Dumbbell" ],
+  [ "Tricep Pushdown", "strength", "arms", "Cable" ],
+  [ "Leg Press", "strength", "legs", "Machine" ],
+  [ "Romanian Deadlift", "strength", "legs", "Barbell" ],
+  [ "Plank", "bodyweight", "core", "Bodyweight" ],
+  [ "Treadmill Run", "cardio", "cardio", "Treadmill" ]
 ]
 
 exercises.each do |name, type, group, equipment|
@@ -150,10 +150,10 @@ exercises.each do |name, type, group, equipment|
 end
 
 workout_templates = {
-  "Push Day" => [["Bench Press", 4, 8], ["Shoulder Press", 3, 10], ["Tricep Pushdown", 3, 12]],
-  "Pull Day" => [["Deadlift", 3, 5], ["Lat Pulldown", 3, 10], ["Seated Row", 3, 10], ["Dumbbell Curl", 3, 12]],
-  "Legs"     => [["Squat", 4, 8], ["Leg Press", 3, 10], ["Romanian Deadlift", 3, 10]],
-  "Full Body" => [["Squat", 3, 8], ["Bench Press", 3, 8], ["Seated Row", 3, 10]]
+  "Push Day" => [ [ "Bench Press", 4, 8 ], [ "Shoulder Press", 3, 10 ], [ "Tricep Pushdown", 3, 12 ] ],
+  "Pull Day" => [ [ "Deadlift", 3, 5 ], [ "Lat Pulldown", 3, 10 ], [ "Seated Row", 3, 10 ], [ "Dumbbell Curl", 3, 12 ] ],
+  "Legs"     => [ [ "Squat", 4, 8 ], [ "Leg Press", 3, 10 ], [ "Romanian Deadlift", 3, 10 ] ],
+  "Full Body" => [ [ "Squat", 3, 8 ], [ "Bench Press", 3, 8 ], [ "Seated Row", 3, 10 ] ]
 }
 
 workout_templates.each do |name, rows|

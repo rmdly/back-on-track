@@ -9,7 +9,7 @@ class CreateStores < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :stores, [:user_id, :name], unique: true
-    add_index :stores, [:user_id, :position]
+    add_index :stores, [ :user_id, :name ], unique: true
+    add_index :stores, [ :user_id, :position ]
   end
 end

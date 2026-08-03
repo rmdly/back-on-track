@@ -10,6 +10,6 @@ class CreateWeeklyPlans < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :weekly_plans, [:user_id, :starts_on], unique: true
+    add_index :weekly_plans, [ :user_id, :starts_on ], unique: true
   end
 end

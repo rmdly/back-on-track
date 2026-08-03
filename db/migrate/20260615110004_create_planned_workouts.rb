@@ -13,6 +13,6 @@ class CreatePlannedWorkouts < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :planned_workouts, [:user_id, :planned_on]
+    add_index :planned_workouts, [ :user_id, :planned_on ]
   end
 end

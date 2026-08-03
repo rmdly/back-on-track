@@ -14,6 +14,6 @@ class CreateWorkoutSets < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :workout_sets, [:workout_exercise_id, :position]
+    add_index :workout_sets, [ :workout_exercise_id, :position ]
   end
 end

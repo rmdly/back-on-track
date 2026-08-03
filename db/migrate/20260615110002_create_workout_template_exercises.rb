@@ -12,7 +12,7 @@ class CreateWorkoutTemplateExercises < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :workout_template_exercises, [:workout_template_id, :position],
+    add_index :workout_template_exercises, [ :workout_template_id, :position ],
               name: "index_wte_on_template_and_position"
   end
 end

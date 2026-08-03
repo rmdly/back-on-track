@@ -9,7 +9,7 @@ class CreateWorkoutExercises < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :workout_exercises, [:workout_session_id, :position],
+    add_index :workout_exercises, [ :workout_session_id, :position ],
               name: "index_workout_exercises_on_session_and_position"
   end
 end

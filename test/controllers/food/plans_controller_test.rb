@@ -30,7 +30,7 @@ module Food
       end
       list = @user.shopping_lists.order(:created_at).last
       assert_redirected_to shopping_shopping_list_path(list)
-      assert_equal ["Rice"], list.shopping_list_items.pluck(:name)
+      assert_equal [ "Rice" ], list.shopping_list_items.pluck(:name)
     end
   end
 end

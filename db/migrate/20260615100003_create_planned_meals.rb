@@ -12,6 +12,6 @@ class CreatePlannedMeals < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :planned_meals, [:weekly_plan_id, :planned_on]
+    add_index :planned_meals, [ :weekly_plan_id, :planned_on ]
   end
 end

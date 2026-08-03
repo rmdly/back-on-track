@@ -9,6 +9,6 @@ class CreateWorkoutTemplates < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :workout_templates, [:user_id, :active]
+    add_index :workout_templates, [ :user_id, :active ]
   end
 end

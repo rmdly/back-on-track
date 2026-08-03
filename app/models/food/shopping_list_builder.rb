@@ -48,7 +48,7 @@ module Food
           next unless planned_meal.meal
 
           planned_meal.meal.meal_ingredients.each do |ingredient|
-            key = [ingredient.name.to_s.strip.downcase, ingredient.unit.to_s.strip.downcase]
+            key = [ ingredient.name.to_s.strip.downcase, ingredient.unit.to_s.strip.downcase ]
             group = groups[key] ||= {
               name: ingredient.name, unit: ingredient.unit,
               quantity: nil, shopping_item: ingredient.shopping_item

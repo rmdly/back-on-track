@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
-  resource :registration, only: [:new, :create]
+  resource :registration, only: [ :new, :create ]
 
   root "dashboards#show"
   # Day view: the dashboard renders any date. Today is the default (root).
@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   namespace :routine do
     resources :task_templates, except: :show
-    resources :daily_tasks, only: [:create, :edit, :update, :destroy] do
+    resources :daily_tasks, only: [ :create, :edit, :update, :destroy ] do
       patch :complete, on: :member
       patch :reopen, on: :member
       patch :skip, on: :member
@@ -22,9 +22,9 @@ Rails.application.routes.draw do
     resources :stores, except: :show
     resources :shopping_items, except: :show
     resources :shopping_lists do
-      resources :shopping_list_items, only: [:create]
+      resources :shopping_list_items, only: [ :create ]
     end
-    resources :shopping_list_items, only: [:edit, :update, :destroy] do
+    resources :shopping_list_items, only: [ :edit, :update, :destroy ] do
       patch :buy, on: :member
       patch :unbuy, on: :member
     end
@@ -35,35 +35,35 @@ Rails.application.routes.draw do
     post "plan/generate_shopping_list", to: "plans#generate_shopping_list", as: :plan_generate_shopping_list
 
     resources :meals do
-      resources :meal_ingredients, only: [:create]
+      resources :meal_ingredients, only: [ :create ]
     end
-    resources :meal_ingredients, only: [:edit, :update, :destroy]
-    resources :planned_meals, only: [:create, :edit, :update, :destroy]
+    resources :meal_ingredients, only: [ :edit, :update, :destroy ]
+    resources :planned_meals, only: [ :create, :edit, :update, :destroy ]
   end
 
   namespace :training do
     resources :exercises, except: :show
     resources :workout_templates do
-      resources :workout_template_exercises, only: [:create]
+      resources :workout_template_exercises, only: [ :create ]
     end
-    resources :workout_template_exercises, only: [:edit, :update, :destroy]
-    resources :planned_workouts, only: [:create, :destroy] do
+    resources :workout_template_exercises, only: [ :edit, :update, :destroy ]
+    resources :planned_workouts, only: [ :create, :destroy ] do
       post :start, on: :member
     end
-    resources :workout_sessions, except: [:edit, :update] do
+    resources :workout_sessions, except: [ :edit, :update ] do
       patch :finish, on: :member
-      resources :workout_exercises, only: [:create]
+      resources :workout_exercises, only: [ :create ]
     end
-    resources :workout_exercises, only: [:destroy] do
-      resources :workout_sets, only: [:create]
+    resources :workout_exercises, only: [ :destroy ] do
+      resources :workout_sets, only: [ :create ]
     end
-    resources :workout_sets, only: [:update, :destroy] do
+    resources :workout_sets, only: [ :update, :destroy ] do
       patch :complete, on: :member
       post :duplicate, on: :member
     end
   end
 
-  resource :settings, only: [:show, :edit, :update]
+  resource :settings, only: [ :show, :edit, :update ]
 
   # Test-only deterministic sign-in for system tests (never mounted in prod).
   if Rails.env.test?

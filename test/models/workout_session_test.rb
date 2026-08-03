@@ -14,7 +14,7 @@ class WorkoutSessionTest < ActiveSupport::TestCase
   end
 
   test "total_sets and total_volume aggregate across exercises" do
-    session = session_with_sets([[60, 10], [60, 8]])
+    session = session_with_sets([ [ 60, 10 ], [ 60, 8 ] ])
     assert_equal 2, session.total_sets
     assert_equal 60 * 10 + 60 * 8, session.total_volume
   end
@@ -37,7 +37,7 @@ class WorkoutSessionTest < ActiveSupport::TestCase
     we = session.workout_exercises.first
     assert_equal @bench, we.exercise
     assert_equal 3, we.workout_sets.count
-    assert_equal [8, 8, 8], we.workout_sets.map(&:reps)
+    assert_equal [ 8, 8, 8 ], we.workout_sets.map(&:reps)
   end
 
   test "previous_performance finds the same exercise in an earlier session" do

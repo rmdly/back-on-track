@@ -17,9 +17,9 @@ class CreateDailyTasks < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :daily_tasks, [:daily_plan_id, :position]
+    add_index :daily_tasks, [ :daily_plan_id, :position ]
     # A template should generate at most one task per day.
-    add_index :daily_tasks, [:daily_plan_id, :task_template_id], unique: true,
+    add_index :daily_tasks, [ :daily_plan_id, :task_template_id ], unique: true,
               where: "task_template_id IS NOT NULL", name: "index_daily_tasks_unique_template_per_plan"
   end
 end

@@ -33,6 +33,6 @@ class WeeklyPlanTest < ActiveSupport::TestCase
     on_day = plan.planned_meals.create!(user: @user, planned_on: day, meal_type: :dinner, name: "Tuna pasta")
     plan.planned_meals.create!(user: @user, planned_on: day + 1, meal_type: :dinner, name: "Mince and rice")
 
-    assert_equal [on_day], plan.planned_meals_for(day)
+    assert_equal [ on_day ], plan.planned_meals_for(day)
   end
 end

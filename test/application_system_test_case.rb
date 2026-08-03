@@ -4,7 +4,7 @@ Capybara.enable_aria_label = true
 Capybara.default_max_wait_time = 10
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  driven_by :selenium, using: :headless_chrome, screen_size: [400, 900]
+  driven_by :selenium, using: :headless_chrome, screen_size: [ 400, 900 ]
 
   # Sign a user in deterministically via a test-only endpoint, avoiding flakiness
   # from driving the auth form (the form itself is covered by controller tests).
